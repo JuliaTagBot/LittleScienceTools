@@ -13,7 +13,7 @@ using LittleScienceTools.Measuring
 
 ### Observable
 A type for computation of means and errors on means.
-New measurements can be taken using operator `&`.
+New observations can be taken using operator `&`.
 Kahan summation algorithm is used.
 ```julia
 nsamples = 10^6
@@ -31,6 +31,8 @@ vec = randn(nsamples)
 for x in vec
     ob &= x
 end
+# or equivalently
+#ob &= vec
 
 error(ob) # ≈ std(vec) / √(nsamples-1)   
 mean(ob) # ≈ mean(vec)

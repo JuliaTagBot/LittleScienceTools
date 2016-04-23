@@ -53,6 +53,15 @@ function (&)(a::Observable,val::Number)
     Observable(v1, v2, t)
 end
 
+function (&)(a::Observable,vals::AbstractArray)
+     b = deepcopy(a)
+    for x in vals
+        b &= x
+    end
+    return b
+end
+
+
 mean(a::Observable) = a.t > 0 ? a.v1/a.t : 0
 var(a::Observable) = a.v2 / a.t - mean(a)^2
 error(a::Observable) = a.t > 1 ? sqrt(var(a) /(a.t -1)) : 0
