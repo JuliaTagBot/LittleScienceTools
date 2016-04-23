@@ -36,7 +36,7 @@ type Params
 end
 
 obs = ObsTable(Params)
-# or as an equivalent alterntive
+# or as an equivalent alternative
 obs = ObsTable()
 set_params_names!(obs, [:a, :b])
 
@@ -44,8 +44,12 @@ for (x,y) in zip(1.:10., 1.:10.)
     par = Params(x,y)
     for i=1:1e3
         r1, r2 = [x,y] + randn(2)
+
+        # Indexing can be done with a Tuple or with a type (which will be "splattered" to a tuple). 
+        # If there are no Observable corresponding to
+        # a given name (i.e. :sum), a new one will be created.
         obs[par][:sum] &= r1 + r2
-        obs[par][:sum2] &= r1^2 + r2^2
+        obs[(x,y)][:sum2] &= r1^2 + r2^2
     end
 end
 open("res.dat","w") do f
