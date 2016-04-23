@@ -16,8 +16,9 @@ A type for computation of means and errors on means.
 New measurements can be taken using operator `&`.
 Kahan summation algorithm is used.
 ```julia
+nsamples = 10^6
 ob = Observable()
-for i=1:10^6
+for i=1:nsamples
     ob &= norm(2rand(2)-1) < 1 ? 1 : 0
 end
 ob *= 4
@@ -26,10 +27,19 @@ ob *= 4
 println(ob) # print mean and its error : 3.140972 0.001642615473
 
 ob = Observable()
-for i=1:10^6
-    ob &= randn()
+vec = randn(nsamples)
+for x in vec
+    ob &= x
 end
+
+error(ob) # ≈ std(vec) / √(nsamples-1)   
+mean(ob) # ≈ mean(vec)
 @assert isapprox(mean(ob), 0, atol=5*error(ob))
+```
+The `error` for a random variate of (theorical) standard deviation `σ` is approximately given by
+
+```julia
+error(obs) ~ σ / √nsamples
 ```
 
 ### ObsTable
