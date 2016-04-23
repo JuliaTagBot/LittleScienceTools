@@ -1,5 +1,6 @@
 module LittleScienceTools
 
-# package code goes here
+# module Measuring
+include("measuring.jl")
 
-end # module
+end # module LittleScienceTools
