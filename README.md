@@ -88,3 +88,24 @@ The output of last line takes the form
 9.0 9.0  17.950020910225792 0.04520093327554878  163.1443633615597 0.8114722094137728
 10.0 10.0  20.08347213915644 0.04356861490043347  203.57961128009254 0.878721667868061
 ```
+
+## module Random
+
+### ParisiRapuano
+A pseudo-random number generator based on
+REF???
+```julia
+type ParisiRapuano <: AbstractRNG
+    ....
+end
+```
+It conforms to the julia abstract RNG interface (which is not documented at all):
+```julia
+rng = ParisiRapuano()
+srand(rng, 17)
+# or equivalently
+rng = ParisiRapuano(17)
+
+r = rand(rng)   # 0 <= r < 1.
+v = randn(rng, 10) # 10 normally distributed floats
+```

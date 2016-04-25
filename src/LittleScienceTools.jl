@@ -17,5 +17,11 @@ module Measuring
     include("Measuring/obstable.jl")
 end # submodue
 
+module Random
+    export ParisiRapuano
+
+    import Base: rand, srand
+    include("Random/parisi_rapuano.jl")
+end #submodue
 
 end # module LittleScienceTools
