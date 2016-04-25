@@ -91,8 +91,10 @@ The output of last line takes the form
 
 ## module Random
 
-### ParisiRapuano
+### ParisiRapuano (Experimental)
 A pseudo-random number generator based on Ref [Parisi-Rapuano '85](http://www.sciencedirect.com/science/article/pii/0370269385906707)
+This variant of linear congruential engine should be much faster then julia's standard MersenneTwister.
+(TODO BENCHMARKS)
 ```julia
 type ParisiRapuano <: AbstractRNG
     ....
