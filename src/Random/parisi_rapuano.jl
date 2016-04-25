@@ -1,3 +1,4 @@
+# Ref [Parisi-Rapuano '85](http://www.sciencedirect.com/science/article/pii/0370269385906707)
 type ParisiRapuano <: AbstractRNG
     myrand::UInt32
     ira::Array{UInt32,1}
@@ -28,6 +29,16 @@ function ParisiRapuano(seed::Integer)
     return ParisiRapuano(myrand, ira, ip, ip1, ip2, ip3)
 end
 
+ParisiRapuano() = ParisiRapuano(make_seed()) # should be greater then 0
+
+function make_seed()
+    seed = UInt32(0)
+    while seed == 0
+        seed = rand(RandomDevice(), UInt32)
+    end
+    return seed
+end
+
 srand(r::ParisiRapuano, seed) = deepcopy!(r, ParisiRapuano(seed))
 
 function deepcopy!{T}(dest::T, source::T)
@@ -38,17 +49,19 @@ function deepcopy!{T}(dest::T, source::T)
 end
 
 function rand(r::ParisiRapuano, ::Type{Base.Random.CloseOpen})
-    assert( 1<= r.ip+1 <= 256)
-	assert( 1<= r.ip1+1 <= 256)
-	assert( 1<= r.ip2+1 <= 256)
-	assert( 1<= r.ip3+1 <= 256)
-    r.ira[r.ip+1] = (r.ira[r.ip1+1] + r.ira[r.ip2+1]) $ r.ira[r.ip3+1]
-    x = r.ira[r.ip+1]
-    r.ip+=1; r.ip1+=1;r.ip2+=1; r.ip3+=1
+    # assert( 1<= r.ip+1 <= 256)
+	# assert( 1<= r.ip1+1 <= 256)
+	# assert( 1<= r.ip2+1 <= 256)
+	# assert( 1<= r.ip3+1 <= 256)
+    uno = UInt8(1)
+    x = (r.ira[r.ip1+1] + r.ira[r.ip2+1]) $ r.ira[r.ip3+1]
+    r.ira[r.ip+1] = x
+    r.ip = (r.ip + uno) % UInt8;
+    r.ip1 = (r.ip1 + uno) % UInt8;
+    r.ip2 = (r.ip2 + uno) % UInt8;
+    r.ip3 = (r.ip3 + uno) % UInt8
     return 2.3283064365e-10 * x
 end
 
 rand(r::ParisiRapuano, ::Type{Base.Random.Close1Open2}) = rand(r, Base.Random.CloseOpen) + 1.
-
-
-end
+rand(r::ParisiRapuano, ::Type{Float64}) = rand(r, Base.Random.CloseOpen)

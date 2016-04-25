@@ -92,8 +92,7 @@ The output of last line takes the form
 ## module Random
 
 ### ParisiRapuano
-A pseudo-random number generator based on
-REF???
+A pseudo-random number generator based on Ref [Parisi-Rapuano '85](http://www.sciencedirect.com/science/article/pii/0370269385906707)
 ```julia
 type ParisiRapuano <: AbstractRNG
     ....
@@ -107,5 +106,8 @@ srand(rng, 17)
 rng = ParisiRapuano(17)
 
 r = rand(rng)   # 0 <= r < 1.
-v = randn(rng, 10) # 10 normally distributed floats
+v = rand(rng, 100)   # 100  random floats uniform in [0,1)
+
+# ATTENTION: don't use randn, has issues!
+# v = randn(rng, 10) # 10 normally distributed floats
 ```
