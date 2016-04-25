@@ -28,7 +28,7 @@ function obs_from_mean_err_samp(m, err, t)
     v1 = m*t
     var = err^2 *(t-1)
     v2 = (var + m^2)*t
-    return Observable(v1, v2, t, 0., 0.)
+    return Observable(v1, v2, t)
 end
 
 function (&)(a::Observable,b::Observable)
@@ -72,8 +72,11 @@ end
 
 Base.show(io::IO, a::Observable) = shortshow(io, a)
 
-*(a::Observable, val::Number) = Observable(val*a.v1, val^2*a.v2, a.t, val*a.cv1, val*a.cv2)
+*(a::Observable, val::Number) = Observable(val*a.v1, val^2*a.v2, a.t, val*a.cv1)
 *(val::Number, a::Observable) = *(a, val)
+
++(a::Observable, val::Number) = Observable(a.v1 + val*a.t, a.v2 + val*a.v1 + val^2*a.t, a.t)
++(val::Number, a::Observable) = +(a, val)
 
 type Measure
     mean::Float64
