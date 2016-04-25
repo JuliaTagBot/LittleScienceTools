@@ -202,14 +202,19 @@ function Base.show(io::IO, t::ObsTable)
     println(io)
 
     # PRINT DATA
-    for (k, v) in data
+    for (k, obs) in data
         for p in k
             print(io, "$p ")
         end
-        for obs in values(v)
-            print(io, " $obs ")
+        for name in onames
+            if hasvalue(obs, name)
+                print(io, " $(obs[name])")
+            else
+                print(io, " NaN NaN ")
+            end
         end
         println(io)
     end
 end
+
 end #module
