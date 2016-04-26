@@ -73,7 +73,7 @@ function Base.show(io::IO, t::ObsTable)
         end
         for name in onames
             if haskey(obs, name)
-                print(io, " $(obs[name])")
+                print(io, " $(obs[name]) ")
             else
                 print(io, " NaN NaN ")
             end
