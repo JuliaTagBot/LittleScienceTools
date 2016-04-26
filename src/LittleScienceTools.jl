@@ -18,10 +18,13 @@ module Measuring
 end # submodue
 
 module Random
-    export ParisiRapuano
+    using Base.Random
+    export ParisiRapuano, randperm!
 
     import Base: rand, srand
     include("Random/parisi_rapuano.jl")
+    include("Random/random.jl")
+
 end #submodue
 
 end # module LittleScienceTools
