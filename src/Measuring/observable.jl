@@ -54,7 +54,10 @@ var(a::Observable) = a.v2 / a.t - mean(a)^2
 error(a::Observable) = a.t > 1 ? sqrt(var(a) /(a.t -1)) : 0
 
 function shortshow(io::IO, a::Observable)
-    print(io, mean(a), " ", error(a))
+    r = round(Int, log(10, error(a)))
+    r = abs(min(0,r)) + 2
+    const fmt = "%.$(r)f %.2e"
+    @eval @printf($io, $fmt, $(mean(a)), $(error(a)))#mean(a), " ", error(a))
 end
 
 Base.show(io::IO, a::Observable) = shortshow(io, a)
