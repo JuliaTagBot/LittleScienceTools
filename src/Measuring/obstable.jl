@@ -28,6 +28,11 @@ function obs_names(t::ObsTable)
     names
 end
 
+function nsamples(t::ObsTable, par::Tuple)
+    haskey(t, par) || return 0
+    return first(t[par])[2].t
+end
+
 # Indexing inteface
 getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{Symbol,Observable}())
 setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(i))
@@ -42,6 +47,8 @@ end
 to_index(i::Tuple) = i
 
 endof(t::ObsTable) = endof(t.data)
+
+haskey(t::ObsTable, k) = haskey(t.data, k)
 
 # Iterable inteface
 start(t::ObsTable) = start(t.data)
@@ -60,6 +67,8 @@ function Base.show(io::IO, t::ObsTable)
         print(io, "$i:$k ")
         i+=1
     end
+    print("$i:nsamples ")
+    i+= 1
     for k in onames
         print(io, " $i-$(i+1):$k ")
         i+=2
@@ -67,10 +76,11 @@ function Base.show(io::IO, t::ObsTable)
     println(io)
 
     # PRINT DATA
-    for (k, obs) in data
-        for p in k
+    for (par, obs) in data
+        for p in par
             print(io, "$p ")
         end
+        print(io, "$(nsamples(t, par)) ")
         for name in onames
             if haskey(obs, name)
                 print(io, " $(obs[name]) ")

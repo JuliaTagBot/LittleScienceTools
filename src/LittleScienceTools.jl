@@ -11,7 +11,7 @@ module Measuring
     export set_params_names!
 
     import Base: &, +, *, error, mean, var
-    import Base: setindex!, getindex, start, done, next, endof, eltype, length
+    import Base: setindex!, getindex, start, done, next, endof, eltype, length, haskey
     include("Measuring/observable.jl")
     include("Measuring/measure.jl")
     include("Measuring/obstable.jl")
