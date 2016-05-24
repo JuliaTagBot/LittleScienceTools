@@ -125,3 +125,59 @@ v = rand(rng, 100)   # 100  random floats uniform in [0,1)
 In-place uniform random permutation of the elements of `v`.
 """
 ```
+
+## module Vectors
+Some custom vector types.
+```julia
+using LittleScienceTools.Vectors
+```
+### SymVec
+```julia
+type SymVec{T}
+    v::Vector{T}
+    L::Int
+end
+```
+A vector type for symmetric indexing. Indexing is allowed in the range -L:L.
+
+*Example*
+```julia
+L = 10
+v = SymVec{Int}(L)
+for i=-L:L
+    v[i] = 2i
+end
+for i=-L:L
+    @assert v[i] == 2i
+end
+v[L+1] # Error
+v[-L-1] # Error
+```
+
+### ExtVec
+```julia
+type ExtVec{T}
+    v::SymVec{T}
+    L::Int
+    a_left::T
+    b_left::T
+    a_right::T
+    b_right::T
+end
+```
+
+A extended vector type for symmetric indexing and linear extrapolation outside
+its boundaries.
+*Example*
+```julia
+L = 10
+v = ExtVec{Int}(L)
+for i=-L:L
+    v[i] = 2i
+end
+extend_left!(v)
+extend_right!(v)
+for i=-3L:3L
+    @assert v[i] == 2i
+end
+```

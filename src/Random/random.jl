@@ -13,3 +13,5 @@ function randperm!(rng::AbstractRNG, v::AbstractArray)
 end
 
 randperm!(v::AbstractArray) = randperm!(GLOBAL_RNG, v)
+
+getRNG(seed::Integer) = seed > 0 ? MersenneTwister(seed) : GLOBAL_RNG 

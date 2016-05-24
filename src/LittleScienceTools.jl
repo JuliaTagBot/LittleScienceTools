@@ -19,12 +19,20 @@ end # submodue
 
 module Random
     using Base.Random
-    export ParisiRapuano, randperm!
+    export ParisiRapuano, randperm!, getRNG
 
     import Base: rand, srand
     include("Random/parisi_rapuano.jl")
     include("Random/random.jl")
-
 end #submodue
+
+module Vectors
+    export SymVec, ExtVec
+    export extend_left!, extend_right!
+    import Base: setindex!, getindex, convert
+
+    include("Vector/symvec.jl")
+    include("Vector/extvec.jl")
+end #submodule
 
 end # module LittleScienceTools

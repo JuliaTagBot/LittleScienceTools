@@ -51,7 +51,8 @@ end
 
 mean(a::Observable) = a.t > 0 ? a.v1/a.t : 0
 var(a::Observable) = a.v2 / a.t - mean(a)^2
-error(a::Observable) = a.t > 1 ? sqrt(var(a) /(a.t -1)) : 0
+error(a::Observable) = a.t <= 1 ? 0 :
+                       var(a) < 0 ? 0. : sqrt(var(a) /(a.t -1)) # sometimes numerical errors for small var
 
 function shortshow(io::IO, a::Observable)
     max_round = 10
