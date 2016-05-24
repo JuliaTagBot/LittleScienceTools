@@ -31,8 +31,8 @@ module Vectors
     export extend_left!, extend_right!
     import Base: setindex!, getindex, convert
 
-    include("Vector/symvec.jl")
-    include("Vector/extvec.jl")
+    include("Vectors/symvec.jl")
+    include("Vectors/extvec.jl")
 end #submodule
 
 end # module LittleScienceTools

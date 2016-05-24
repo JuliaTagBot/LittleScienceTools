@@ -14,7 +14,7 @@ println("# Testing module Random...")
     include("Random/random.jl")
 
 println("# Testing module Vector...")
-    include("Vector/symvec.jl")
-    include("Vector/extvec.jl")
+    include("Vectors/symvec.jl")
+    include("Vectors/extvec.jl")
 
 println("# All tests passed!")
