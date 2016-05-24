@@ -25,7 +25,14 @@ type SymVec{T}
     L::Int
 end
 
+function SymVec{T}(v::Vector{T})
+    @assert isodd(length(v))
+    L = (length(v) - 1) ÷ 2
+    SymVec(v, L)
+end
+
 convert{T}(::Type{SymVec{T}}, L::Integer = 0) = SymVec(Array(T, 2L+1), L)
 length(v::SymVec) = v.L
+# eltype(v::SymVec) = eltype(v.v)
 @inline setindex!(v::SymVec, x, i) = setindex!(v.v, x, v.L+1+i)
 @inline getindex(v::SymVec, i) = getindex(v.v, v.L+1+i)

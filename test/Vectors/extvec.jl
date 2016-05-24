@@ -8,3 +8,4 @@ extend_right!(v)
 for i=-2L:2L
     @test v[i] == 2i
 end
+@test length(v) == L

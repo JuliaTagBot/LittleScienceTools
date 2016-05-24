@@ -37,6 +37,7 @@ convert{T}(::Type{ExtVec{T}}, L::Integer = 0) = ExtVec(SymVec{T}(L), L
                                     , zero(T), zero(T), zero(T), zero(T))
 
 length(v::ExtVec) = length(v.v)
+# eltype(v::ExtVec) = eltype(v.v)
 @inline setindex!(v::ExtVec, x, i) = setindex!(v.v, x, i)
 @inline getindex(v::ExtVec, i) = i < -v.L ? v.a_left + v.b_left*i :
                          i > v.L ? v.a_right+v.b_right*i : getindex(v.v, i)
