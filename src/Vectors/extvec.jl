@@ -33,6 +33,11 @@ type ExtVec{T}
     a_right::T
     b_right::T
 end
+function ExtVec{T}(v::Vector{T})
+    sv = SymVec(v)
+    ExtVec(sv, sv.L, zero(T), zero(T), zero(T), zero(T))
+end
+
 convert{T}(::Type{ExtVec{T}}, L::Integer = 0) = ExtVec(SymVec{T}(L), L
                                     , zero(T), zero(T), zero(T), zero(T))
 
@@ -56,3 +61,5 @@ function extend_right!(v::ExtVec)
 end
 extend_left!(v::ExtVec, a, b) = (v.a_left=a; v.b_left=b)
 extend_right!(v::ExtVec, a, b) = (v.a_right=a; v.b_right=b)
+
+extend!(v::ExtVec) = (extend_left!(v); extend_right!(v))

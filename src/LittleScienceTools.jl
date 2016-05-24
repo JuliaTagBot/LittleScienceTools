@@ -28,7 +28,7 @@ end #submodue
 
 module Vectors
     export SymVec, ExtVec
-    export extend_left!, extend_right!
+    export extend_left!, extend_right!, extend!
     import Base: setindex!, getindex, convert, length #, eltype
 
     include("Vectors/symvec.jl")
