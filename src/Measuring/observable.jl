@@ -31,7 +31,7 @@ function (&)(a::Observable,val::Number)
 
     y = val*val - a.cv2;
     z = a.v2 + y;
-    cv1 = (z - a.v2) - y;
+    cv2 = (z - a.v2) - y;
     v2 = z;
 
     vlast = val;
