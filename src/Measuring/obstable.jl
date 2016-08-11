@@ -10,7 +10,7 @@ function ObsTable{Params}(::Type{Params})
     set_params_names!(t, fieldnames(Params))
     t
 end
-splat(a) = [a.(f) for f in fieldnames(a)]
+splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
 function set_params_names!(t::ObsTable, keys::Vector{Symbol})
