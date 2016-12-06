@@ -127,7 +127,7 @@ In-place uniform random permutation of the elements of `v`.
 ```
 
 ## module Vectors
-Some custom vector types.
+**DO NOT USE, NOT PERFORMANT** Some custom vector types.
 ```julia
 using LittleScienceTools.Vectors
 ```

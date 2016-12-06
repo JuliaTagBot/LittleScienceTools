@@ -1,5 +1,4 @@
 module LittleScienceTools
-
 module Measuring
     using DataStructures
 
