@@ -10,6 +10,8 @@ function ObsTable{Params}(::Type{Params})
     set_params_names!(t, fieldnames(Params))
     t
 end
+ObsTable{T}(params::T) = ObsTable(T)
+
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
