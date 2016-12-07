@@ -9,7 +9,7 @@ module Measuring
     export ObsTable
     export set_params_names!
 
-    import Base: &, +, *, error, mean, var
+    import Base: &, +, *, error, mean, var, merge
     import Base: setindex!, getindex, start, done, next, endof, eltype, length, haskey
     include("Measuring/observable.jl")
     include("Measuring/measure.jl")

@@ -54,8 +54,8 @@ haskey(t::ObsTable, k) = haskey(t.data, k)
 
 # Iterable inteface
 start(t::ObsTable) = start(t.data)
-next(t::ObsTable, state)  = start(t.data)
-done(t::ObsTable, state) = done(t.data)
+next(t::ObsTable, state)  = next(t.data, state)
+done(t::ObsTable, state) = done(t.data, state)
 eltype(::Type{ObsTable}) = eltype(typeof(t.data))
 length(t::ObsTable) = length(t.data)
 
@@ -92,4 +92,19 @@ function Base.show(io::IO, t::ObsTable)
         end
         println(io)
     end
+end
+
+function merge(t1::ObsTable, t2::ObsTable)
+    t = deepcopy(t1)
+    return merge!(t, t2)
+end
+
+function merge!(t::ObsTable, t2::ObsTable)
+    t.par_names = union(t.par_names, t2.par_names)
+    for (k,v) in t2
+        for (n, o) in v
+            t[k][n] &= o
+        end
+    end
+    return t
 end
