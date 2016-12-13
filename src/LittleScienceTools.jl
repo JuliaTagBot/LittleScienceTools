@@ -1,4 +1,7 @@
+__precompile__(true)
 module LittleScienceTools
+
+__precompile__(true)
 module Measuring
     using DataStructures
 
@@ -16,6 +19,8 @@ module Measuring
     include("Measuring/obstable.jl")
 end # submodue
 
+
+__precompile__(true)
 module Random
     using Base.Random
     export ParisiRapuano, randperm!, getRNG
@@ -25,6 +30,7 @@ module Random
     include("Random/random.jl")
 end #submodue
 
+__precompile__(true)
 module Vectors
     export SymVec, ExtVec
     export extend_left!, extend_right!, extend!
