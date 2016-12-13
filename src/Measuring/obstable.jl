@@ -1,9 +1,11 @@
-typealias ObsData OrderedDict{Tuple,OrderedDict{Symbol,Observable}}
+typealias Ord Base.Order.ForwardOrdering
+typealias ObsData SortedDict{Tuple,OrderedDict{Symbol,Observable}, Ord}
 
 type ObsTable
     data::ObsData
     par_names::OrderedSet{Symbol}
 end
+
 ObsTable() = ObsTable(ObsData(), OrderedSet{Symbol}())
 function ObsTable{Params}(::Type{Params})
     t = ObsTable()
