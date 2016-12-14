@@ -104,6 +104,33 @@ save("obs.jld", "obs", obs)
 newobs = load("obs.jl", "obs")
 ```
 
+## module RFIM
+Find the ground states of a Random Field Ising Model through a minimum cut algorithm. Couplings have to be positive.
+The package *FatGraphs.jl* is required for this:
+```julia
+julia> Pkg.clone("https://github.com/CarloLucibello/FatGraphs.jl")
+```
+The only function exported by this module is `rfim_ground_state`:
+```julia
+using LittleScienceTools.RFIM
+using FatGraphs
+
+g = random_regular_graph(20, 3)
+J = 2 # costant couplings
+h = randn(20)
+σ = rfim_ground_state(g, h, J)
+
+# couplings can also vary on each edge
+J = Vector{Vector{Float64}}()
+for i=1:nv(g)
+    push!(J, zeros(degree(g, i)))
+    for (k, j) in enumerate(neighbors(g, i))
+        J[i][k] = rand()
+    end
+end
+σ = rfim_ground_state(g, h, J)
+```
+
 ## module Random
 Random number generation related utilities.
 ```julia
