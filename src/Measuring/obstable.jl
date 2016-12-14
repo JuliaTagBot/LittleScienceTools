@@ -62,19 +62,23 @@ eltype(::Type{ObsTable}) = eltype(typeof(t.data))
 length(t::ObsTable) = length(t.data)
 
 function Base.show(io::IO, t::ObsTable)
+    lenpar = 9
+    lenobs = 21
     data = t.data; pnames= t.par_names
     onames = obs_names(t)
     ## PRINT HEADER
-    print(io, "# ")
     i = 1
     for k in pnames
-        print(io, "$i:$k ")
+        s = i == 1 ? "# $i:$k": "$i:$k"
+        print(io, s * repeat(" ",lenpar-length(s)))
         i+=1
     end
-    print(io, "$i:nsamples ")
+    s = "$i:num"
+    print(io, s * repeat(" ",lenpar-length(s)))
     i+= 1
     for k in onames
-        print(io, " $i-$(i+1):$k ")
+        s = "$i-$(i+1):$k"
+        print(io, s * repeat(" ",lenobs-length(s)))
         i+=2
     end
     println(io)
@@ -82,14 +86,18 @@ function Base.show(io::IO, t::ObsTable)
     # PRINT DATA
     for (par, obs) in data
         for p in par
-            print(io, "$p ")
+            s = "$p"
+            print(io, s * repeat(" ", lenpar-length(s)))
         end
-        print(io, "$(nsamples(t, par)) ")
+        s = "$(nsamples(t, par))"
+        print(io, s * repeat(" ", lenpar-length(s)))
         for name in onames
             if haskey(obs, name)
-                print(io, " $(obs[name]) ")
+                s = "$(obs[name])"
+                print(io, s * repeat(" ", lenobs-length(s)))
             else
-                print(io, " NaN NaN ")
+                s = "NaN NaN"
+                print(io, s * repeat(" ", lenobs-length(s)))
             end
         end
         println(io)
