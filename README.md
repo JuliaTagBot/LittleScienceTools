@@ -1,5 +1,8 @@
 # LittleScienceTools
 Simple tools for everyday science and data analysis.
+
+At the present time we encourage the use only of modules Measuring and RFIM, since the others are still experimental.
+
 ## Install
 ```julia
 Pkg.clone("https://github.com/CarloLucibello/LittleScienceTools.git")
@@ -45,7 +48,9 @@ error(obs) ~ σ / √nsamples
 ```
 
 ### ObsTable
-A book-keeping structure for your `Observable`s.
+A book-keeping structure for your `Observable`s. Helpful
+when measuring some observables under different sets of  
+*external* parameters.
 
 ```julia
 type Params
@@ -62,11 +67,14 @@ for (x,y) in zip(1.:10., 1.:10.)
     for i=1:1e3
         r1, r2 = [x,y] + randn(2)
 
-        # Indexing can be done with a Tuple or with a type (which will be "splattered" to a tuple).
-        # If there are no Observable corresponding to
-        # a given name (i.e. :sum), a new one will be created.
-        obs[par][:sum] &= r1 + r2
+        # Indexing can be done with a Tuple
         obs[(x,y)][:sum2] &= r1^2 + r2^2
+
+        # or with a type (which will be "splattered" to a tuple).
+        obs[par][:sum] &= r1 + r2
+
+        # If there are no Observable corresponding to
+        # a given symbol (i.e. :sum), a new one will be created.
     end
 end
 open("res.dat","w") do f
@@ -87,6 +95,13 @@ The output of last line looks like this:
 8.0 8.0 1000  16.019 4.58e-02  130.36 7.35e-01
 9.0 9.0 1000  17.993 4.62e-02  163.91 8.38e-01
 10.0 10.0 1000  20.016 4.60e-02  202.38 9.30e-01
+```
+To store an ObsTable use JLD:
+```julia
+using JLD
+
+save("obs.jld", "obs", obs)
+newobs = load("obs.jl", "obs")
 ```
 
 ## module Random

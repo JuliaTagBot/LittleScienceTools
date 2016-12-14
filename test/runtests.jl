@@ -2,12 +2,17 @@ include("../src/LittleScienceTools.jl")
 using LittleScienceTools.Measuring
 using LittleScienceTools.Random
 using LittleScienceTools.Vectors
+using LittleScienceTools.RFIM
+using FatGraphs
 
 using Base.Test
 
 println("# Testing module Measuring...")
     include("Measuring/observable.jl")
     include("Measuring/obstable.jl")
+
+println("# Testing module RFIM...")
+    include("RFIM/mincut.jl")
 
 println("# Testing module Random...")
     include("Random/parisi_rapuano.jl")
