@@ -77,7 +77,7 @@ function Base.show(io::IO, t::ObsTable)
     print(io, s * repeat(" ",lenpar-length(s)))
     i+= 1
     for k in onames
-        s = "$i-$(i+1):$k"
+        s = "$i:$k"
         print(io, s * repeat(" ",lenobs-length(s)))
         i+=2
     end
