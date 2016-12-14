@@ -104,6 +104,11 @@ function Base.show(io::IO, t::ObsTable)
     end
 end
 
+"""
+    merge(t1::ObsTable, t2::ObsTable)
+
+Fuse togheter the observations of `t1` and `t2`.
+"""
 function merge(t1::ObsTable, t2::ObsTable)
     t = deepcopy(t1)
     return merge!(t, t2)
@@ -117,4 +122,30 @@ function merge!(t::ObsTable, t2::ObsTable)
         end
     end
     return t
+end
+
+"""
+    tomatr(t::ObsTable) -> (params, means, errors)
+
+Converts `t` into three matrices, `params`,`means` and `errors`.
+"""
+function tomatr(t::ObsTable)
+    n = length(t)
+    m1 = length(params_names(t))
+    pars = zeros(n,m1)
+    onames = obs_names(t)
+    m2 = length(obs_names(t))
+    y = zeros(n, m2)
+    yerr = zeros(n, m2)
+    i = 1
+    for (p, olist) in t
+        pars[i,:] = [p...]
+        for (j, oname) in enumerate(onames)
+            obs = olist[oname]
+            y[i,j] = mean(obs)
+            yerr[i,j] = error(obs)
+        end
+        i += 1
+    end
+    return pars, y, yerr
 end

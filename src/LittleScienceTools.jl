@@ -8,7 +8,8 @@ module Measuring
     export add!, mean, var, error
     export obs_from_mean_err_samp, measure_binomial
     export ObsTable
-    export set_params_names!
+    export set_params_names!, params_names, obs_names
+    export tomatr
 
     using DataStructures
     import Base: &, +, *, error, mean, var, merge
