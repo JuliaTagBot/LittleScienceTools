@@ -61,44 +61,47 @@ done(t::ObsTable, state) = done(t.data, state)
 eltype(::Type{ObsTable}) = eltype(typeof(t.data))
 length(t::ObsTable) = length(t.data)
 
-function Base.show(io::IO, t::ObsTable)
-    lenpar = 9
-    lenobs = 21
-    data = t.data; pnames= t.par_names
+"""
+    header(t::ObsTable)
+
+Returns a string containg the header of the printed table.
+"""
+function header(t::ObsTable; lenpar=9, lenobs=18)
+    pnames= t.par_names
     onames = obs_names(t)
-    ## PRINT HEADER
+    h = ""
     i = 1
     for k in pnames
         s = i == 1 ? "# $i:$k": "$i:$k"
-        print(io, s * repeat(" ",lenpar-length(s)))
+        h *= s * repeat(" ",lenpar-length(s))
         i+=1
     end
     s = "$i:num"
-    print(io, s * repeat(" ",lenpar-length(s)))
+    h *= s * repeat(" ",lenpar-length(s))
     i+= 1
     for k in onames
         s = "$i:$k"
-        print(io, s * repeat(" ",lenobs-length(s)))
+        h *=  s * repeat(" ",lenobs-length(s))
         i+=2
     end
-    println(io)
+    return strip(h)
+end
 
-    # PRINT DATA
-    for (par, obs) in data
+function Base.show(io::IO, t::ObsTable)
+    lenpar = 9
+    lenobs = 21
+    println(io, header(t, lenpar=lenpar, lenobs=lenobs))
+
+    for (par, obs) in t
         for p in par
             s = "$p"
             print(io, s * repeat(" ", lenpar-length(s)))
         end
         s = "$(nsamples(t, par))"
         print(io, s * repeat(" ", lenpar-length(s)))
-        for name in onames
-            if haskey(obs, name)
-                s = "$(obs[name])"
-                print(io, s * repeat(" ", lenobs-length(s)))
-            else
-                s = "NaN NaN"
-                print(io, s * repeat(" ", lenobs-length(s)))
-            end
+        for name in obs_names(t)
+            s = haskey(obs, name) ? "$(obs[name])" : "NaN NaN"
+            print(io, s * repeat(" ", lenobs-length(s)))
         end
         println(io)
     end
@@ -125,11 +128,11 @@ function merge!(t::ObsTable, t2::ObsTable)
 end
 
 """
-    tomatr(t::ObsTable) -> (params, means, errors)
+    tomatrices(t::ObsTable) -> (params, means, errors)
 
 Converts `t` into three matrices, `params`,`means` and `errors`.
 """
-function tomatr(t::ObsTable)
+function tomatrices(t::ObsTable)
     n = length(t)
     m1 = length(params_names(t))
     pars = zeros(n,m1)
@@ -148,4 +151,32 @@ function tomatr(t::ObsTable)
         i += 1
     end
     return pars, y, yerr
+end
+
+
+"""
+    tomatrix(t::ObsTable)
+
+Converts `t` into a matrix corresponding to the printed table.
+See [`header`](@ref) for the meaning of the columns.
+"""
+function tomatrix(t::ObsTable)
+    n = length(t)
+    m1 = length(params_names(t))
+    onames = obs_names(t)
+    m2 = length(obs_names(t))
+    y = zeros(n, m1 + 1 + 2m2) #condidering also #samples
+    i = 1
+    for (p, olist) in t
+        y[i,1:m1] = [p...]
+        y[i,m1+1] = nsamples(t, p)
+        for (j, oname) in enumerate(onames)
+            obs = olist[oname]
+            j = 2j+m1
+            y[i,j] = mean(obs)
+            y[i,j+1] = error(obs)
+        end
+        i += 1
+    end
+    return y
 end

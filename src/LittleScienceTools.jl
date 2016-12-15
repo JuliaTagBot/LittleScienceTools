@@ -8,8 +8,8 @@ module Measuring
     export add!, mean, var, error
     export obs_from_mean_err_samp, measure_binomial
     export ObsTable
-    export set_params_names!, params_names, obs_names
-    export tomatr
+    export set_params_names!, params_names, obs_names, header
+    export tomatrix, tomatrices
 
     using DataStructures
     import Base: &, +, *, error, mean, var, merge
@@ -50,5 +50,8 @@ module Vectors
     include("Vectors/symvec.jl")
     include("Vectors/extvec.jl")
 end #submodule
+
+export interwine
+include("utils.jl")
 
 end # module LittleScienceTools
