@@ -180,3 +180,38 @@ function tomatrix(t::ObsTable)
     end
     return y
 end
+
+"""
+    ObsTable(datfile::String)
+Read an observable for a properly formatted dat file (i.e. the result of a
+    `print(datfile,t::ObsTable)`).
+"""
+function ObsTable(datfile::String)
+    f = open(datfile,"r")
+    header = readline(f)
+    h = split(h)[2:end]
+    names = map(x->Symbol(split(x,':')[2]),h)
+
+    nums = map(x->parse(Int,split(x,':')[1]),h)
+    count = find(nums .== 1:length(nums)) |> length
+    nparams = count-1
+
+    dat = readdlm(f)
+    close(f)
+
+    t = ObsTable()
+    on = names[count:end]
+    set_params_names!(t, names[1:nparams])
+    for i=1:size(res,1)
+        pars = (res[i,1:nparams]...)
+        nsamp = res[i,count]
+        for j=count+1:2:size(res,2)
+            m, e = res[i,j], res[i,j+1]
+            jid = (j+1-count)÷2
+            if isfinite(m)
+                t[pars][names[jid]] = obs_from_mean_err_samp(m, e, nsamp)
+            end
+        end
+    end
+    return t
+end
