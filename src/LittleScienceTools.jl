@@ -51,6 +51,13 @@ module Vectors
     include("Vectors/extvec.jl")
 end #submodule
 
+
+__precompile__(true)
+module Roots
+    export newton, NewtonParameters
+    include("Roots/newton.jl")
+end #submodule
+
 export interwine
 include("utils.jl")
 
