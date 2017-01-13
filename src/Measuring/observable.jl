@@ -23,19 +23,19 @@ function (&)(a::Observable,b::Observable)
 end
 
 # Kahan summation algorithm
-function (&)(a::Observable,val::Number)
-    y = val - a.cv1;
-    z = a.v1 + y;
-    cv1 = (z - a.v1) - y;
-    v1 = z;
+function (&)(a::Observable,val::Real)
+    y = val - a.cv1
+    z = a.v1 + y
+    cv1 = (z - a.v1) - y
+    v1 = z
 
-    y = val*val - a.cv2;
-    z = a.v2 + y;
-    cv2 = (z - a.v2) - y;
-    v2 = z;
+    y = val*val - a.cv2
+    z = a.v2 + y
+    cv2 = (z - a.v2) - y
+    v2 = z
 
-    vlast = val;
-    t = a.t + 1;
+    vlast = val
+    t = a.t + 1
 
     Observable(v1, v2, t)
 end
@@ -71,11 +71,11 @@ end
 
 Base.show(io::IO, a::Observable) = shortshow(io, a)
 
-*(a::Observable, val::Number) = Observable(val*a.v1, val^2*a.v2, a.t)
-*(val::Number, a::Observable) = *(a, val)
+*(a::Observable, val::Real) = Observable(val*a.v1, val^2*a.v2, a.t)
+*(val::Real, a::Observable) = *(a, val)
 
-+(a::Observable, val::Number) = Observable(a.v1 + val*a.t, a.v2 + val*a.v1 + val^2*a.t, a.t)
-+(val::Number, a::Observable) = +(a, val)
++(a::Observable, val::Real) = Observable(a.v1 + val*a.t, a.v2 + val*a.v1 + val^2*a.t, a.t)
++(val::Real, a::Observable) = +(a, val)
 
 """
 Desidered properties for `t` of obs resulting from composition of Observables `a` and `b`:
