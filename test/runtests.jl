@@ -4,7 +4,6 @@ using LittleScienceTools.Random
 using LittleScienceTools.Roots
 using LittleScienceTools.RFIM
 using LittleScienceTools.Vectors
-using LittleScienceTools.RFIM
 using FatGraphs
 
 using Base.Test

@@ -16,3 +16,11 @@ for i=1:nsamples
 end
 ob *= 4
 @test isapprox(mean(ob), π, atol = 5error(ob))
+
+@test ob == ob
+
+ob2 = copy(ob)
+ob2 &= NaN
+@test ob2 == ob
+ob2 &= Inf
+@test ob2 == ob

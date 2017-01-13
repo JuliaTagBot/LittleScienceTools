@@ -12,8 +12,9 @@ module Measuring
     export tomatrix, tomatrices
 
     using DataStructures
-    import Base: &, +, *, error, mean, var, merge
-    import Base: setindex!, getindex, start, done, next, endof, eltype, length, haskey
+    import Base: &, +, *, error, mean, var, merge,
+                setindex!, getindex, start, done, next, endof, eltype,
+                length, haskey, ==, copy
 
     include("Measuring/observable.jl")
     include("Measuring/measure.jl")

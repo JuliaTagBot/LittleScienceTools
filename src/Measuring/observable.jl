@@ -26,7 +26,7 @@ end
 function (&)(a::Observable,val::Real)
     if !isfinite(val)
         warn("$val observation not considered")
-        return deepcopy(a)
+        return copy(a)
     end
     y = val - a.cv1
     z = a.v1 + y
@@ -80,6 +80,8 @@ Base.show(io::IO, a::Observable) = shortshow(io, a)
 
 +(a::Observable, val::Real) = Observable(a.v1 + val*a.t, a.v2 + val*a.v1 + val^2*a.t, a.t)
 +(val::Real, a::Observable) = +(a, val)
+==(a::Observable, b::Observable) = all(getfield(a,f) == getfield(b,f) for f in fieldnames(a))
+copy(a::Observable) = deepcopy(a)
 
 """
 Desidered properties for `t` of obs resulting from composition of Observables `a` and `b`:
