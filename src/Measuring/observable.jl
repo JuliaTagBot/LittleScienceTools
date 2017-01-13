@@ -24,6 +24,10 @@ end
 
 # Kahan summation algorithm
 function (&)(a::Observable,val::Real)
+    if !isfinite(val)
+        warn("$val observation not considered")
+        return deepcopy(a)
+    end
     y = val - a.cv1
     z = a.v1 + y
     cv1 = (z - a.v1) - y
@@ -40,7 +44,7 @@ function (&)(a::Observable,val::Real)
     Observable(v1, v2, t)
 end
 
-function (&)(a::Observable,vals::AbstractArray)
+function (&){T<:Real}(a::Observable,vals::AbstractArray{T})
      b = deepcopy(a)
     for x in vals
         b &= x
