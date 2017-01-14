@@ -1,5 +1,5 @@
 # LittleScienceTools
-Simple tools for everyday science and data analysis. The package is divedd in different submodules:
+Simple tools for everyday science and data analysis with Julia. The package is divedd in different submodules:
 - **Measuring**: keep averages and erros of observabls and print them in a nicely formatted way.
 - **RFIM**: find the ground state of a random field Ising model with a minimum cut algorithm.
 - **Roots**: Newton's method for finding zero of one- and multi-dimensional functions.
