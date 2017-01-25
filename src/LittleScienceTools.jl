@@ -1,7 +1,6 @@
 __precompile__(true)
 module LittleScienceTools
 
-__precompile__(true)
 module Measuring
     export Observable
     export Measure
@@ -21,7 +20,6 @@ module Measuring
     include("Measuring/obstable.jl")
 end # submodule
 
-__precompile__(true)
 module RFIM
     export rfim_ground_state
 
@@ -30,7 +28,6 @@ module RFIM
     include("RFIM/mincut.jl")
 end # submodule
 
-__precompile__(true)
 module Random
     export ParisiRapuano, randperm!, getRNG
 
@@ -41,7 +38,6 @@ module Random
     include("Random/random.jl")
 end #submodule
 
-__precompile__(true)
 module Vectors
     export SymVec, ExtVec
     export extend_left!, extend_right!, extend!
@@ -53,7 +49,6 @@ module Vectors
 end #submodule
 
 
-__precompile__(true)
 module Roots
     export newton, NewtonParameters
     include("Roots/newton.jl")
