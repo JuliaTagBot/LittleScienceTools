@@ -1,10 +1,11 @@
 __precompile__()
 module Random
-    export ParisiRapuano, randperm!, getRNG
+using Compat #xor
+export ParisiRapuano, randperm!, getRNG
 
-    using Base.Random
-    import Base: rand, srand
+using Base.Random
+import Base: rand, srand
 
-    include("parisi_rapuano.jl")
-    include("random.jl")
+include("parisi_rapuano.jl")
+include("random.jl")
 end #submodule

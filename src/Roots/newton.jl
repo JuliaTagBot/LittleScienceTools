@@ -122,9 +122,9 @@ end
 function newton(f::Function, x₀, pars::NewtonParameters)
     η = 1.0
     n = length(x₀)
-    ∂f = Array(Float64, n, n)
+    ∂f = Matrix{Float64}(n, n)
     x = Float64[x₀[i] for i = 1:n]
-    x1 = Array(Float64, n)
+    x1 = Vector{Float64}(n)
 
     f0 = f(x)
     @assert length(f0) == n

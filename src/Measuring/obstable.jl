@@ -6,7 +6,7 @@ type ObsTable
     par_names::OrderedSet{Symbol}
 end
 
-ObsTable() = ObsTable(ObsData(), OrderedSet{Symbol}())
+ObsTable() = ObsTable(ObsData(Ord()), OrderedSet{Symbol}())
 function ObsTable{Params}(::Type{Params})
     t = ObsTable()
     set_params_names!(t, fieldnames(Params))

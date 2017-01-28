@@ -1,5 +1,3 @@
-```
-
 ## module Random
 Random number generation related utilities.
 ```julia
