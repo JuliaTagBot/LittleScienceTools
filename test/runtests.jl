@@ -1,9 +1,9 @@
 include("../src/LittleScienceTools.jl")
+using LittleScienceTools
 using LittleScienceTools.Measuring
 using LittleScienceTools.Random
 using LittleScienceTools.Roots
 using LittleScienceTools.RFIM
-using LittleScienceTools.Vectors
 using FatGraphs
 
 using Base.Test
@@ -22,10 +22,6 @@ println("# Testing module Random...")
     include("Random/parisi_rapuano.jl")
     include("Random/random.jl")
 
-println("# Testing module Vector...")
-    include("Vectors/symvec.jl")
-    include("Vectors/extvec.jl")
-
-
+include("utils.jl")
 
 println("# All tests passed!")

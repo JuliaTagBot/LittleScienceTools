@@ -1,7 +1,13 @@
 """
-    interwine{T}(m1::Matrix{T}, m2::Matrix{T})
+    interwine{T}(v1::Vector{T}, v2::Vector{T})
 
-Interwine the elements of two vectors.
+Interwine the elements of two vectors. The resulting
+vector has double the length of the original ones.
+
+**Example**
+```
+interwine([1,1,1], [2,2,2]) == [1,2,1,2,1,2]
+```
 """
 function interwine{T}(v1::Vector{T}, v2::Vector{T})
     @assert size(v1) == size(v2)

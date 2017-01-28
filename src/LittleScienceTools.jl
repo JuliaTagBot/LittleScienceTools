@@ -1,58 +1,11 @@
-__precompile__(true)
+__precompile__()
 module LittleScienceTools
 
-module Measuring
-    export Observable
-    export Measure
-    export add!, mean, var, error
-    export obs_from_mean_err_samp, measure_binomial
-    export ObsTable
-    export set_params_names!, params_names, obs_names, header
-    export tomatrix, tomatrices
-
-    using DataStructures
-    import Base: &, +, *, error, mean, var, merge,
-                setindex!, getindex, start, done, next, endof, eltype,
-                length, haskey, ==, copy
-
-    include("Measuring/observable.jl")
-    include("Measuring/measure.jl")
-    include("Measuring/obstable.jl")
-end # submodule
-
-module RFIM
-    export rfim_ground_state
-
-    using FatGraphs
-
-    include("RFIM/mincut.jl")
-end # submodule
-
-module Random
-    export ParisiRapuano, randperm!, getRNG
-
-    using Base.Random
-    import Base: rand, srand
-
-    include("Random/parisi_rapuano.jl")
-    include("Random/random.jl")
-end #submodule
-
-module Vectors
-    export SymVec, ExtVec
-    export extend_left!, extend_right!, extend!
-
-    import Base: setindex!, getindex, convert, length #, eltype
-
-    include("Vectors/symvec.jl")
-    include("Vectors/extvec.jl")
-end #submodule
-
-
-module Roots
-    export newton, NewtonParameters
-    include("Roots/newton.jl")
-end #submodule
+export Roots, RFIM, Measuring, Random
+include("Measuring/Measuring.jl")
+include("Roots/Roots.jl")
+include("Random/Random.jl")
+include("RFIM/RFIM.jl")
 
 export interwine
 include("utils.jl")
