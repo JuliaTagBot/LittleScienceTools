@@ -22,10 +22,10 @@ end
 
 """
     type NewtonParameters
-        δ::Float64
-        ϵ::Float64
-        verb::Int
-        maxiters::Int
+        δ::Float64      # step for the discrete derivative
+        ϵ::Float64      # stop criterion
+        verb::Int       # verbosity
+        maxiters::Int   # max number of iterations
     end
 
 A type containg the parameters to Newton's method.
