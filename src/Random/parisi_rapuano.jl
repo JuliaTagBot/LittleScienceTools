@@ -1,27 +1,29 @@
 # Ref [Parisi-Rapuano '85](http://www.sciencedirect.com/science/article/pii/0370269385906707)
 type ParisiRapuano <: AbstractRNG
-    myrand::UInt64
-    ira::Vector{UInt64}
+    myrand::UInt32
+    ira::Vector{UInt32}
     ip::UInt8
     ip1::UInt8
     ip2::UInt8
     ip3::UInt8
 end
 
+touint32(x::UInt64) = UInt32((x << 32) >> 32)
+
 function ParisiRapuano(seed::Integer)
-    myrand = convert(UInt64, seed)
+    myrand = convert(UInt32, seed)
     ip = 128
     ip1 = ip - 24
     ip2 = ip - 55
     ip3 = ip - 65
     ip3 =1
-    ira = Vector{UInt64}(256)
+    ira = Vector{UInt32}(256)
 
     for i=ip3:ip-1
-        y = myrand * 16807
-        @compat myrand = xor(y, 0x7fffffff) + (y >> 31)
+        y = myrand * UInt64(16807)
+        @compat myrand = touint32(xor(y, 0x7fffffff) + (y >> 31))
         @compat if xor(myrand, 0x80000000) != 0
-            myrand = (myrand & 0x7fffffff) + 1
+            myrand = (myrand & 0x7fffffff) + one(UInt32)
         end
         ira[i+1] = myrand
     end
@@ -33,7 +35,7 @@ ParisiRapuano() = ParisiRapuano(make_seed()) # should be greater then 0
 function make_seed()
     seed = UInt64(0)
     while seed == 0
-        seed = rand(RandomDevice(), UInt64)
+        seed = rand(RandomDevice(), UInt32)
     end
     return seed
 end
