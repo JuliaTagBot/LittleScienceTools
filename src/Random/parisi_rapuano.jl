@@ -8,7 +8,7 @@ type ParisiRapuano <: AbstractRNG
     ip3::UInt8
 end
 
-touint32(x::UInt64) = UInt32((x << 32) >> 32)
+touint32(x::UInt64) = UInt32(x & 0x00000000ffffffff)
 
 function ParisiRapuano(seed::Integer)
     myrand = convert(UInt32, seed)
