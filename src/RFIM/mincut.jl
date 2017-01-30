@@ -47,7 +47,7 @@ function net_capacity{T}(g::AGraph, h::Vector{T}, J)
     c = Vector{Vector{C}}()
     for i=1:N
         neigs = neighbors(dg, i)
-        push!(c, [ for (k,j) in enumerate(neigs)])
+        push!(c, zeros(length(neigs)))
         for (k,j) in enumerate(neigs)
             if j <= N
                 c[i][k] = getJ(J, i, j, k)
