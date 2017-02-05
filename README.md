@@ -133,13 +133,16 @@ end
 ```
 
 ## module Roots
-Find roots with Newton's method:
+Find roots with Newton's method or by interpolation.
 ```julia
 using LittleScienceTools.Roots
 
-ok, x, it, normf = newton(x->(x^2-1)^2, 0.5)
-# x ≈ 1.0
+ok, x, it, normf = findzero(x->(x^2-1)^2, 0.5) # default's to NewtonMethod
+# x ≈ 1
 
-ok, x, it, normf = newton(x->[x[1]^2,x[2]^2], [1.,1.])
-# x ≈ [0.0, 0.0]
+ok, x, it, normf = findzero(x->[x[1]^2,x[2]^2], [1.,1.], NewtonMethod(), atol = 1e-13)
+# x ≈ [0, 0]
+
+ok, x, it, normf = findzero(x->exp(x)-1, 1, InterpolationMethod(), dx = 0.1)
+# x ≈ 0
 ```
