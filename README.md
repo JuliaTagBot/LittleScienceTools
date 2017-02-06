@@ -20,16 +20,6 @@ A type for computation of means and errors on means.
 New observations can be taken using operator `&`.
 Kahan summation algorithm is used.
 ```julia
-nsamples = 10^6
-ob = Observable()
-for i=1:nsamples
-    ob &= norm(2rand(2)-1) < 1 ? 1 : 0
-end
-ob *= 4
-@assert isapprox(mean(ob), π, atol=5*error(ob))
-
-println(ob) # print mean and its error : 3.140972 0.001642615473
-
 ob = Observable()
 vec = randn(nsamples)
 for x in vec
@@ -38,14 +28,25 @@ end
 # or equivalently
 #ob &= vec
 
-error(ob) # ≈ std(vec) / √(nsamples-1)   
+error(ob) # error on the mean ≈ std(vec) / √(nsamples-1)   
 mean(ob) # ≈ mean(vec)
 @assert isapprox(mean(ob), 0, atol=5*error(ob))
+
+
+ob = Observable()
+for i=1:10^6
+    ob &= norm(2rand(2)-1) < 1 ? 1 : 0
+end
+ob *= 4
+@assert isapprox(mean(ob), π, atol=5*error(ob))
+
+println(ob) # print mean and error
+# 3.140972 0.001642615473
 ```
-The `error` for a random variate of (theorical) standard deviation `σ` is approximately given by
+The `error` for a random variate with standard deviation `σ` is approximately given by
 
 ```julia
-error(obs) ~ σ / √nsamples
+error(obs) ~ σ / √(nsamples-1)
 ```
 
 ### ObsTable
@@ -109,7 +110,7 @@ newobs = load("obs.jl", "obs")
 Find the ground states of a Random Field Ising Model through a minimum cut algorithm. Couplings have to be positive.
 The package *FatGraphs.jl* is required for this:
 ```julia
-julia> Pkg.clone("https://github.com/CarloLucibello/FatGraphs.jl")
+Pkg.clone("https://github.com/CarloLucibello/FatGraphs.jl")
 ```
 The only function exported by this module is `rfim_ground_state`:
 ```julia
