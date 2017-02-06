@@ -1,5 +1,5 @@
 """
-    rfim_ground_state(g::Graph, h::Vector, J)
+    rfim_ground_state(g::AGraph, h::Vector, J)
 
 Computes the ground state of a Random Field Ising Model using
 a minimum cut algorithm implemented in FatGraphs.jl package.
@@ -9,7 +9,7 @@ vector of vectors (adjacency list style).
 
 Returns a vector `σ` taking values ±1.
 """
-function rfim_ground_state(g::Graph, h::Vector, J)
+function rfim_ground_state(g::AGraph, h::Vector, J)
     N = nv(g)
     source = N + 1
     target = N + 2
@@ -27,9 +27,8 @@ Jtype{T}(J::T) = T
 Jtype{T}(J::Vector{Vector{T}}) = T
 Jtype{T}(J::AbstractMatrix{T}) = T
 
-function net_capacity{T}(g::Graph, h::Vector{T}, J)
+function net_capacity{T}(g::AGraph, h::Vector{T}, J)
     N = nv(g)
-    # dg = DiGraph(g)
     dg = digraph(g)
     add_vertices!(dg, 2)
     source = N+1

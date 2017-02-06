@@ -2,11 +2,11 @@
 Simple tools for everyday science and data analysis with Julia. The package is divedd in different submodules:
 - **Measuring**: keep averages and erros of observabls and print them in a nicely formatted way.
 - **RFIM**: find the ground state of a random field Ising model with a minimum cut algorithm.
-- **Roots**: Newton's method for finding zero of one- and multi-dimensional functions.
+- **Roots**: Newton and interpolation method for finding zeros of one- and multi-dimensional functions.
 
 ## Install
 ```julia
-Pkg.clone("https://github.com/CarloLucibello/LittleScienceTools.git")
+Pkg.clone("https://github.com/CarloLucibello/LittleScienceTools")
 ```
 
 ## module Measuring
@@ -133,13 +133,16 @@ end
 ```
 
 ## module Roots
-Find roots with Newton's method:
+Find roots with Newton's method or by interpolation.
 ```julia
 using LittleScienceTools.Roots
 
-ok, x, it, normf = newton(x->(x^2-1)^2, 0.5)
-# x ≈ 1.0
+ok, x, it, normf = findzero(x->(x^2-1)^2, 0.5) # default's to NewtonMethod
+# x ≈ 1
 
-ok, x, it, normf = newton(x->[x[1]^2,x[2]^2], [1.,1.])
-# x ≈ [0.0, 0.0]
+ok, x, it, normf = findzero(x->[x[1]^2,x[2]^2], [1.,1.], NewtonMethod(), atol = 1e-13)
+# x ≈ [0, 0]
+
+ok, x, it, normf = findzero(x->exp(x)-1, 1, InterpolationMethod(), dx = 0.1)
+# x ≈ 0
 ```
