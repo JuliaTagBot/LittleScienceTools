@@ -5,12 +5,12 @@ function findzero_interp(f::Function, x0::Float64;
                         maxiters::Int = 20,
                         parallel::Bool = false,
                         verb::Int = 1,
-                        atol::Float64 = 1e-10)
+                        atol::Float64 = 1e-10,
+                        n::Int = 6)
     s = x0
     ok = false
     iter = 1
     normf0 = Inf
-    n = 5
     while !ok && iter <= maxiters
         verb > 3 && println("# TRIAL $iter for findzero_interp")
         xmax = s + 0.5*(n-1)*dx
