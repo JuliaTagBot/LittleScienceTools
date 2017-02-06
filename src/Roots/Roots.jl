@@ -30,9 +30,9 @@ ok || normf < 1e-10 || warn("Newton Failed")
 """
 findroot(f, x0; kws...) = findroot(f, x0, NewtonMethod(); kws...)
 
-findroot(f, x0::Real,m::AbstractRootsMethod; kws...) = findroot(f, Float64(x0), m; kws...)
-findroot(f, x0::Float64, m::NewtonMethod; kws...) = newton(f, x0; kws...)
-findroot(f, x0::Vector{Float64}, m::NewtonMethod; kws...) = newton(f, x0; kws...)
-findroot(f, x0::Float64, m::InterpolationMethod; kws...) = findzero_interp(f, x0; kws...)
+findroot(f, x0::Real, m::AbstractRootsMethod; kws...) = findroot(f, Float64(x0), m; kws...)
+findroot(f, x0::Float64, ::NewtonMethod; kws...) = newton(f, x0; kws...)
+findroot(f, x0::Vector{Float64}, ::NewtonMethod; kws...) = newton(f, x0; kws...)
+findroot(f, x0::Float64, ::InterpolationMethod; kws...) = findzero_interp(f, x0; kws...)
 
 end #module
