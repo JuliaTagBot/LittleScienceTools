@@ -1,7 +1,7 @@
 # LittleScienceTools
 Simple tools for everyday science and data analysis with Julia. The package is divedd in different submodules:
 - **Measuring**: keep averages and erros of observabls and print them in a nicely formatted way.
-- **RFIM**: find the ground state of a random field Ising model with a minimum cut algorithm.
+- **Ising**: find the ground state of Ising models, using minimum cut or heuristic algorithms.
 - **Roots**: Newton and interpolation method for finding zeros of one- and multi-dimensional functions.
 
 ## Install
@@ -106,31 +106,34 @@ save("obs.jld", "obs", obs)
 newobs = load("obs.jl", "obs")
 ```
 
-## module RFIM
-Find the ground states of a Random Field Ising Model through a minimum cut algorithm. Couplings have to be positive.
+## module Ising
 The package *FatGraphs.jl* is required for this:
 ```julia
 Pkg.clone("https://github.com/CarloLucibello/FatGraphs.jl")
 ```
-The only function exported by this module is `rfim_ground_state`:
+For models with ferromagneting couplings use `ground_state_mincut`to
+find the ground state exactly:
 ```julia
-using LittleScienceTools.RFIM
+using LittleScienceTools.Ising
 using FatGraphs
 
 g = random_regular_graph(20, 3)
 J = 2 # costant couplings
 h = randn(20)
-σ = rfim_ground_state(g, h, J)
+σ = ground_state_mincut(g, h, J)
 
 # couplings can also vary on each edge
-J = Vector{Vector{Float64}}()
-for i=1:nv(g)
-    push!(J, zeros(degree(g, i)))
-    for (k, j) in enumerate(neighbors(g, i))
-        J[i][k] = rand()
-    end
-end
-σ = rfim_ground_state(g, h, J)
+J = sprand(20, 20, 0.1)
+J -= Diagonal(J)
+g = Graph(J)
+σ = ground_state_mincut(g, h, J)
+```
+If negative couplings are present, we have to resort to heuristic algorithms:
+```julia
+J = sprandn(20, 20, 0.1)
+J -= Diagonal(J)
+g = Graph(J)
+σ = ground_state_ϵgreedy(g, h, J; ϵ=0.1, maxiters=100, verb=1)
 ```
 
 ## module Roots

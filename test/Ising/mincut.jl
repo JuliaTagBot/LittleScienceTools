@@ -1,9 +1,9 @@
 g = random_regular_graph(20, 3)
 J = 100
 h = rand(20)
-σ = rfim_ground_state(g, h, J)
+σ = ground_state_mincut(g, h, J)
 @test σ == ones(20)
-σ = rfim_ground_state(g, -h, J)
+σ = ground_state_mincut(g, -h, J)
 @test σ == -ones(20)
 
 J = Vector{Vector{Float64}}()
@@ -15,6 +15,6 @@ for i=1:nv(g)
 end
 
 h = randn(20)
-σ = rfim_ground_state(g, h, J)
-σ2 = rfim_ground_state(g, 2 + h, J)
+σ = ground_state_mincut(g, h, J)
+σ2 = ground_state_mincut(g, 2 + h, J)
 @test all(σ .<= σ2)

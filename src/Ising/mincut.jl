@@ -1,15 +1,15 @@
 """
-    rfim_ground_state(g::AGraph, h::Vector, J)
+    ground_state_mincut(g::AGraph, h::Vector, J)
 
-Computes the ground state of a Random Field Ising Model using
-a minimum cut algorithm implemented in FatGraphs.jl package.
+Exactly compute the ground state of an Ising model with ferromagneting (i.e. nonnegative)
+couplings using a minimum cut algorithm implemented in FatGraphs.jl package.
 
 Coupling `J` can be in the form of a costant, a matrix, or a
 vector of vectors (adjacency list style).
 
 Returns a vector `σ` taking values ±1.
 """
-function rfim_ground_state(g::AGraph, h::Vector, J)
+function ground_state_mincut(g::AGraph, h::Vector, J)
     N = nv(g)
     source = N + 1
     target = N + 2
@@ -18,14 +18,6 @@ function rfim_ground_state(g::AGraph, h::Vector, J)
     σ = 3 - labels[1:N]*2
     return σ
 end
-
-getJ{T}(J::T, i, j, k) = J
-getJ{T}(J::Vector{Vector{T}}, i, j, k) = J[i][k]
-getJ{T}(J::AbstractMatrix{T}, i, j, k) = J[i,j]
-
-Jtype{T}(J::T) = T
-Jtype{T}(J::Vector{Vector{T}}) = T
-Jtype{T}(J::AbstractMatrix{T}) = T
 
 function net_capacity{T}(g::AGraph, h::Vector{T}, J)
     N = nv(g)

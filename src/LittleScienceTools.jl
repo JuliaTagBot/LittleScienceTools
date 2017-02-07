@@ -1,11 +1,11 @@
 __precompile__()
 module LittleScienceTools
 
-export Roots, RFIM, Measuring, Random
+export Roots, Ising, Measuring, Random
 include("Measuring/Measuring.jl")
 include("Roots/Roots.jl")
 include("Random/Random.jl")
-include("RFIM/RFIM.jl")
+include("Ising/Ising.jl")
 
 export interwine
 include("utils.jl")
