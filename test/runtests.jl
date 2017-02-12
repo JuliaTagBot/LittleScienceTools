@@ -18,9 +18,9 @@ include("RFIM/mincut.jl")
 println("# Testing module Roots...")
 include("Roots/Roots.jl")
 
-# println("# Testing module Random...")
+println("# Testing module Random...")
 #     include("Random/parisi_rapuano.jl")
-#     include("Random/random.jl")
+    include("Random/Random.jl")
 
 include("utils.jl")
 
