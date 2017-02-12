@@ -26,6 +26,21 @@ function energy(g, σ, h::Vector, J)
     end
     return E
 end
+
+function random_couplings(g::AGraph)
+    adj = adjacency_list(g)
+    coupls = [ones(Int, degree(g, i)) for i=1:nv(g)]
+    for i=1:nv(g)
+        for (k,j) in neighbors(g,i)
+            if i < j
+                J = rand([-1,1])
+                coupls[i][k] = J
+                ki = findfirst(adj[j], i)
+                coupls[j][ki] =J
+            end
+        end
+    end
+end
 include("mincut.jl")
 include("eps-greedy.jl")
 

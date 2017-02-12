@@ -14,7 +14,7 @@ using Base.Test
 #
 # println("# Testing module Ising...")
 # include("Ising/mincut.jl")
-include("Ising/eps-greedy.jl")
+# include("Ising/eps-greedy.jl")
 #
 # println("# Testing module Roots...")
 # include("Roots/Roots.jl")

@@ -2,8 +2,8 @@ __precompile__()
 module Random
 using Compat #xor
 export ParisiRapuano, randperm!, getRNG,
-        randchoice, randchoice!,
-        randint
+        randchoice, randchoice!, randint,
+        DiscreteDistribution
 
 using Base.Random
 import Base: rand, srand

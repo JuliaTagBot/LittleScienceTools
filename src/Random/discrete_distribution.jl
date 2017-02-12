@@ -4,6 +4,7 @@ immutable DiscreteDistribution
 end
 
 function DiscreteDistribution(w)
+    @assert all(w .>= 0) "All weights should be non-negative"
     p = w / sum(w)
     P = cumsum(p)
     return DiscreteDistribution(p, P)
@@ -27,7 +28,7 @@ function randint(rng::AbstractRNG, probs::Vector{Float64})
         c += p
         r <= c && return i
     end
-    return 0
+    return 0 #not supposed to arrive here
 end
 
 randint(probs::Vector{Float64}) = randint(GLOBAL_RNG, probs)
