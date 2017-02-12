@@ -20,6 +20,7 @@ include("Roots/Roots.jl")
 
 println("# Testing module Random...")
 #     include("Random/parisi_rapuano.jl")
+    include("Random/discrete_distribution.jl")
     include("Random/Random.jl")
 
 include("utils.jl")
