@@ -1,27 +1,18 @@
 """
-    ground_state_epsgreedy(g::AGraph, h::Vector, J)
+    ground_state_τeo(g::AGraph, J::Vector{Vector{Int}})
 
-Computes the ground state of an Ising model using an ϵ-greed heuristic.
-
-Coupling `J` can be in the form of a costant, a matrix, or a
-vector of vectors (adjacency list style).
+Computes the ground state of an Ising model using the τ-EO heuristic.
 
 Returns a vector `σ` taking values ±1.
 """
-function ground_state_τeo(g::AGraph, h::Vector, J;
+function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
         τ::Float64=1.2,
-        maxiters::Int=1000,
+        maxiters::Int=10000,
         verb::Int = 1)
 
     N = nv(g)
     σ = fill(1, N)
-    frust = mutable_binary_maxheap(Float64)
-    ϵstep = ϵstep < 0 ? ϵ / maxiters : ϵstep
-    for i=1:N
-        ii = push!(frust, frustation(g, σ, h, J, i))
-        @assert ii == i # check handles
-    end
-    Emin = Inf
+    Emin = 10^6
     for it=1:maxiters
         for _=1:N
             i = rand() < ϵ ? rand(1:N) : tophandle(frust)
@@ -42,15 +33,3 @@ function ground_state_τeo(g::AGraph, h::Vector, J;
     end
     return σ
 end
-
-function frustation(g::AGraph, σ::Vector, h, J, i)
-    H = h[i]
-    for (k,j) in enumerate(neighbors(g, i))
-        H += getJ(J, i, j, k) * σ[j]
-    end
-    return -H*σ[i]
-end
-
-Base.setindex!(h::MutableBinaryHeap, v, i::Int) = update!(h, i, v)
-Base.getindex(h::MutableBinaryHeap, i::Int) = h.nodes[h.node_map[i]].value
-tophandle(h::MutableBinaryHeap) = h.nodes[1].handle
