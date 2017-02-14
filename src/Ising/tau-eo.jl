@@ -6,9 +6,9 @@ Computes the ground state of an Ising model using the τ-EO heuristic.
 Returns a vector `σ` taking values ±1.
 """
 function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
-        τ::Float64=1.2,
-        maxiters::Int=10000,
-        verb::Int = 1)
+        τ::Float64 = 1.2,
+        maxiters::Int = typemax(Int),
+        infotime::Int = typemax(Int))
 
     N = nv(g)
     σ = fill(1, N)
@@ -20,39 +20,57 @@ function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
         push!(sets[idx], i)
     end
     distr = DiscreteDistribution(Float64[(τ-1)/(1-N^(1-τ)) / l^τ for l=1:N])
+    E = energy(g,σ, zeros(Int, N), J)
+    Emin = E
+    σmin = deepcopy(σ)
 
-    Emin = 10^6
-    for it=1:maxiters
-        for _=1:N
-            @assert sum(length, sets) == N
-            l = rand(distr)
-            idx = searchsortedfirst(cumsum(length.(sets)), l)
-            i = rand(sets[idx])
+    niter_tranche = 10
+    itmultiplier = 4
+    niters = 0
+    foundnewmin = true
 
-            delete!(sets[idx], i)
-            for j in neighbors(g, i)
-                fj = frust(g, σ, J[j], j)
-                idxj = ftoidx(fj, hmax)
-                delete!(sets[idxj], j)
+    while foundnewmin && niters <= maxiters
+        foundnewmin = false
+        for it=1:niter_tranche
+            niters += 1
+            niters > maxiters && break
+            for _=1:N
+                l = rand(distr)
+                idx = searchsortedfirst(cumsum(length.(sets)), l)
+                i = rand(sets[idx])
+
+                delete!(sets[idx], i)
+                for j in neighbors(g, i)
+                    fj = frust(g, σ, J[j], j)
+                    idxj = ftoidx(fj, hmax)
+                    delete!(sets[idxj], j)
+                end
+
+                σ[i] *= -1
+                fi = frust(g, σ, J[i], i)
+                idx = ftoidx(fi, hmax)
+                push!(sets[idx], i)
+                for j in neighbors(g, i)
+                    fj = frust(g, σ, J[j], j)
+                    idxj = ftoidx(fj, hmax)
+                    push!(sets[idxj], j)
+                end
+
+                E += 2fi
+                if E < Emin && niters > 5 # avoids too much copying in the very first steps
+                    foundnewmin = true
+                    Emin = E
+                    σmin = deepcopy(σ)
+                end
             end
-
-            σ[i] *= -1
-            fi = frust(g, σ, J[i], i)
-            idx = ftoidx(fi, hmax)
-            push!(sets[idx], i)
-            for j in neighbors(g, i)
-                fj = frust(g, σ, J[j], j)
-                idxj = ftoidx(fj, hmax)
-                push!(sets[idxj], j)
+            if niters % infotime == 0
+                println("it=$niters E/N=$(E/N)  Emin/N=$(Emin/N)")
             end
         end
-        if it % 10 == 0 && verb > 0
-            E = energy(g,σ, zeros(N), J)/N
-            Emin = E < Emin ? E : Emin
-            println("it=$it m=",sum(σ)/N, " E=$E Emin=$Emin")
-        end
+
+        foundnewmin && (niter_tranche *= itmultiplier)
     end
-    return σ
+    return σmin, Emin
 end
 
 ftoidx(f::Int, hmax::Int) = hmax - f + 1

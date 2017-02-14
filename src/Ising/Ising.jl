@@ -16,13 +16,13 @@ Jtype{T}(J::T) = T
 Jtype{T}(J::Vector{Vector{T}}) = T
 Jtype{T}(J::AbstractMatrix{T}) = T
 
-function energy(g, σ, h::Vector, J)
-    E = 0.
+function energy{TH}(g::AGraph, σ::Vector, h::Vector{TH}, Js)
+    E = zero(promote_type(Jtype(Js), TH))
     for i=1:nv(g)
         E -= h[i]*σ[i]
         for (k,j) in enumerate(neighbors(g,i))
             if i < j
-                E -= getJ(J, i, j, k) * σ[i] * σ[j]
+                E -= getJ(Js, i, j, k) * σ[i] * σ[j]
             end
         end
     end
