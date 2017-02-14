@@ -74,7 +74,7 @@ is more efficient than the one in Base for `rand(itr)`.
 randchoice(rng, itr) = nth(itr, _randchoice(rng, length(itr)))
 randchoice(itr) = randchoice(GLOBAL_RNG, itr)
 
-_randchoice(rng, n::Int) = ceil(Int, rand(rng) * n)
+_randchoice(rng, n::Int) = floor(Int, rand(rng) * n) + 1
 
 #
 #    nth(xs, n::Integer)

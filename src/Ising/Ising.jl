@@ -1,10 +1,12 @@
 __precompile__()
 module Ising
-
+using ..Random
 using DataStructures
-export ground_state_mincut, ground_state_ϵgreedy
-
 using FatGraphs
+
+export  ground_state_mincut, ground_state_ϵgreedy, ground_state_τeo,
+        random_couplings
+
 
 getJ{T}(J::T, i, j, k) = J
 getJ{T}(J::Vector{Vector{T}}, i, j, k) = J[i][k]
@@ -31,18 +33,22 @@ function random_couplings(g::AGraph)
     adj = adjacency_list(g)
     coupls = [ones(Int, degree(g, i)) for i=1:nv(g)]
     for i=1:nv(g)
-        for (k,j) in neighbors(g,i)
+        for (k,j) in enumerate(neighbors(g,i))
             if i < j
                 J = rand([-1,1])
                 coupls[i][k] = J
                 ki = findfirst(adj[j], i)
-                coupls[j][ki] =J
+                coupls[j][ki] = J
             end
         end
     end
+    return coupls
 end
+
+
 include("mincut.jl")
-include("eps-greedy.jl")
+include("tau-eo.jl")
+# include("eps-greedy.jl")
 
 
 end # submodule

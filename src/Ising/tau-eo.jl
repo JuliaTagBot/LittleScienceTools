@@ -12,42 +12,55 @@ function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
 
     N = nv(g)
     σ = fill(1, N)
-    hmax = maximum(sum(abs, v), J)
-    counter = zeros(Int, 2hmax + 1)
+    hmax = maximum(v->sum(abs,v), J)
+    sets = [Set{Int}() for s=1:2hmax+1]
     for i=1:N
-        f = frust
+        f = frust(g, σ, J[i], i)
         idx = ftoidx(f, hmax)
-        counter[idx] += 1
+        push!(sets[idx], i)
     end
+    distr = DiscreteDistribution(Float64[(τ-1)/(1-N^(1-τ)) / l^τ for l=1:N])
 
     Emin = 10^6
     for it=1:maxiters
         for _=1:N
-            i = rand() < ϵ ? rand(1:N) : tophandle(frust)
+            @assert sum(length, sets) == N
+            l = rand(distr)
+            idx = searchsortedfirst(cumsum(length.(sets)), l)
+            i = rand(sets[idx])
+
+            delete!(sets[idx], i)
+            for j in neighbors(g, i)
+                fj = frust(g, σ, J[j], j)
+                idxj = ftoidx(fj, hmax)
+                delete!(sets[idxj], j)
+            end
 
             σ[i] *= -1
-            frust[i] *= -1
-            σi = σ[i]
-            for (k,j) in enumerate(neighbors(g, i))
-                frust[j] -= 2getJ(J,i,j,k) * σi * σ[j]
+            fi = frust(g, σ, J[i], i)
+            idx = ftoidx(fi, hmax)
+            push!(sets[idx], i)
+            for j in neighbors(g, i)
+                fj = frust(g, σ, J[j], j)
+                idxj = ftoidx(fj, hmax)
+                push!(sets[idxj], j)
             end
         end
         if it % 10 == 0 && verb > 0
-            E = energy(g,σ,h,J)/N
+            E = energy(g,σ, zeros(N), J)/N
             Emin = E < Emin ? E : Emin
-            println("it=$it ϵ=$ϵ m=",sum(σ)/N, " E=$E Emin=$Emin")
+            println("it=$it m=",sum(σ)/N, " E=$E Emin=$Emin")
         end
-        ϵ -= ϵstep
     end
     return σ
 end
 
-ftoidx(f::Int, hmax::Int) = hmax -f + 1
+ftoidx(f::Int, hmax::Int) = hmax - f + 1
 
-function frust(g::AGraph, σ::Vector, J::Vector{Vector{Int}}, i)
+function frust(g::AGraph, σ::Vector, J::Vector{Int}, i)
     H = 0
     for (k,j) in enumerate(neighbors(g, i))
-        H += J[i][k] * σ[j]
+        H += J[k] * σ[j]
     end
-    return H*σ[i]
+    return -H*σ[i]
 end
