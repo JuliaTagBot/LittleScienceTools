@@ -13,7 +13,9 @@ using Base.Test
 # include("Measuring/obstable.jl")
 #
 # println("# Testing module Ising...")
-# include("Ising/mincut.jl")
+include("Ising/Ising.jl")
+include("Ising/mincut.jl")
+include("Ising/tau-eo.jl")
 # include("Ising/eps-greedy.jl")
 #
 # println("# Testing module Roots...")
