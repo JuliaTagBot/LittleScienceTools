@@ -106,4 +106,17 @@ otherwise.
 """
 getRNG(seed::Integer) = seed > 0 ? MersenneTwister(seed) : GLOBAL_RNG
 
+if VERSION < v"0.6-"
+    function rand(r::AbstractRNG, t::Dict)
+        isempty(t) && throw(ArgumentError("dict must be non-empty"))
+        n = length(t.slots)
+        while true
+            i = rand(r, 1:n)
+            Base.isslotfilled(t, i) && return (t.keys[i] => t.vals[i])
+        end
+    end
+    rand(t::Dict) = rand(GLOBAL_RNG, t)
+    rand(r::AbstractRNG, s::Set) = rand(r, s.dict).first
+    rand(s::Set) = rand(GLOBAL_RNG, s)
+end
 end #submodule
