@@ -4,6 +4,7 @@ using LittleScienceTools.Measuring
 using LittleScienceTools.Random
 using LittleScienceTools.Roots
 using LittleScienceTools.Ising
+using Compat
 using Erdos
 using Base.Test
 

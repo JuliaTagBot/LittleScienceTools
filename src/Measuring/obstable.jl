@@ -1,5 +1,5 @@
-typealias Ord Base.Order.ForwardOrdering
-typealias ObsData SortedDict{Tuple,OrderedDict{Symbol,Observable}, Ord}
+const Ord = Base.Order.ForwardOrdering
+const ObsData = SortedDict{Tuple,OrderedDict{Symbol,Observable}, Ord}
 
 type ObsTable
     data::ObsData

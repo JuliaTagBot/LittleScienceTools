@@ -1,5 +1,11 @@
 __precompile__()
 module Measuring
+    using DataStructures
+    using Compat
+    import Base: &, +, *, error, mean, var, merge,
+                setindex!, getindex, start, done, next, endof, eltype,
+                length, haskey, ==, copy
+
     export Observable
     export Measure
     export add!, mean, var, error
@@ -7,11 +13,6 @@ module Measuring
     export ObsTable
     export set_params_names!, params_names, obs_names, header
     export tomatrix, tomatrices
-
-    using DataStructures
-    import Base: &, +, *, error, mean, var, merge,
-                setindex!, getindex, start, done, next, endof, eltype,
-                length, haskey, ==, copy
 
     include("observable.jl")
     include("measure.jl")

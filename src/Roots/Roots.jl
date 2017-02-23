@@ -1,12 +1,14 @@
 __precompile__()
 module Roots
+using Compat
+
 export findroot, AbstractRootsMethod,
      NewtonMethod, InterpolationMethod
 
 include("newton.jl")
 include("interpolation.jl")
 
-abstract AbstractRootsMethod
+@compat abstract type AbstractRootsMethod end
 immutable NewtonMethod <: AbstractRootsMethod end
 immutable InterpolationMethod <: AbstractRootsMethod end
 

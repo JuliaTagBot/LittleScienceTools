@@ -55,7 +55,7 @@ when measuring some observables under different sets of
 *external* parameters.
 
 ```julia
-type Params
+struct Params
     a; b
 end
 
