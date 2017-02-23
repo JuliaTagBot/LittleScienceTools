@@ -1,5 +1,5 @@
 """
-    ground_state_mincut(g::AGraph, h::Vector, J)
+    ground_state_mincut(g::AGraph, h::Vector, J) -> σ, E
 
 <<<<<<< HEAD:src/Ising/mincut.jl
 Exactly compute the ground state of an Ising model with ferromagneting (i.e. nonnegative)
@@ -12,7 +12,7 @@ a minimum cut algorithm implemented in Erdos.jl package.
 Coupling `J` can be in the form of a costant, a matrix, or a
 vector of vectors (adjacency list style).
 
-Returns a vector `σ` taking values ±1.
+Returns a vector `σ` taking values ±1 and the ground state energy `E`.
 """
 function ground_state_mincut(g::AGraph, h::Vector, J)
     N = nv(g)
@@ -21,7 +21,8 @@ function ground_state_mincut(g::AGraph, h::Vector, J)
     dg, c = net_capacity(g, h, J)
     f, F, labels = maximum_flow(dg, source, target, c)
     σ = 3 - labels[1:N]*2
-    return σ
+    E = energy(g, σ, h, J)
+    return σ, E
 end
 
 function net_capacity{T}(g::AGraph, h::Vector{T}, J)

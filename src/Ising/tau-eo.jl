@@ -6,7 +6,7 @@
 
 Computes the ground state of an Ising model using the τ-EO heuristic.
 
-Returns a vector `σ` taking values ±1.
+Returns a configuration `σ` (a vector with ±1 components) and its energy `E`.
 """
 function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
         τ::Float64 = 1.2,
@@ -33,7 +33,7 @@ function ground_state_τeo(g::AGraph, J::Vector{Vector{Int}};
     niters = 0
     foundnewmin = true
 
-    while niters < miniters ||(foundnewmin && niters <= maxiters)
+    while foundnewmin && niters <= maxiters
         foundnewmin = false
         for it=1:niter_tranche
             niters += 1

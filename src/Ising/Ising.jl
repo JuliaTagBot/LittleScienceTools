@@ -2,7 +2,6 @@ __precompile__()
 module Ising
 using ..Random
 using DataStructures
-
 using Erdos
 
 export  ground_state_mincut, ground_state_ϵgreedy, ground_state_τeo,
@@ -69,7 +68,5 @@ end
 
 include("mincut.jl")
 include("tau-eo.jl")
-# include("eps-greedy.jl")
-
 
 end # submodule

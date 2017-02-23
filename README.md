@@ -106,46 +106,29 @@ save("obs.jld", "obs", obs)
 newobs = load("obs.jl", "obs")
 ```
 
-<<<<<<< HEAD
 ## module Ising
-The package *FatGraphs.jl* is required for this:
-=======
-## module RFIM
-Find the ground states of a Random Field Ising Model through a minimum cut algorithm. Couplings have to be positive.
 The package *Erdos.jl* is required for this:
->>>>>>> 3b8f1a4... FatGraphs -> Erdos
 ```julia
 Pkg.add("Erdos")
 ```
 For models with ferromagneting couplings use `ground_state_mincut`to
 find the ground state exactly:
 ```julia
-<<<<<<< HEAD
 using LittleScienceTools.Ising
-using FatGraphs
-=======
-using LittleScienceTools.RFIM
 using Erdos
->>>>>>> 3b8f1a4... FatGraphs -> Erdos
 
 g = random_regular_graph(20, 3)
 J = 2 # costant couplings
 h = randn(20)
-σ = ground_state_mincut(g, h, J)
+σ, E = ground_state_mincut(g, h, J)
 
 # couplings can also vary on each edge
 J = sprand(20, 20, 0.1)
 J -= Diagonal(J)
 g = Graph(J)
-σ = ground_state_mincut(g, h, J)
+σ, E = ground_state_mincut(g, h, J)
 ```
-If negative couplings are present, we have to resort to heuristic algorithms:
-```julia
-J = sprandn(20, 20, 0.1)
-J -= Diagonal(J)
-g = Graph(J)
-σ = ground_state_ϵgreedy(g, h, J; ϵ=0.1, maxiters=100, verb=1)
-```
+See `ground_state_τeo` for dealing with frustrated models.
 
 ## module Roots
 Find roots with Newton's method or by interpolation.

@@ -1,3 +1,8 @@
+using LittleScienceTools.Random
+using LittleScienceTools.Ising
+using Erdos
+using Base.Test
+
 g = Graph(10,20)
 Js = random_couplings(g)
 @test length(Js) == nv(g)
@@ -19,3 +24,6 @@ for i=1:nv(g)
         end
     end
 end
+
+include("mincut.jl")
+include("tau-eo.jl")

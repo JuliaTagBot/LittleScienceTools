@@ -3,28 +3,19 @@ using LittleScienceTools
 using LittleScienceTools.Measuring
 using LittleScienceTools.Random
 using LittleScienceTools.Roots
-<<<<<<< HEAD
 using LittleScienceTools.Ising
-using FatGraphs
-=======
-using LittleScienceTools.RFIM
 using Erdos
->>>>>>> 3b8f1a4... FatGraphs -> Erdos
-
 using Base.Test
 
-# println("# Testing module Measuring...")
-# include("Measuring/observable.jl")
-# include("Measuring/obstable.jl")
-#
-# println("# Testing module Ising...")
-include("Ising/Ising.jl")
-include("Ising/mincut.jl")
-include("Ising/tau-eo.jl")
-# include("Ising/eps-greedy.jl")
-#
-# println("# Testing module Roots...")
-# include("Roots/Roots.jl")
+println("# Testing module Measuring...")
+include("Measuring/observable.jl")
+include("Measuring/obstable.jl")
+
+println("# Testing module Ising...")
+include("Ising/runtests.jl")
+
+println("# Testing module Roots...")
+include("Roots/Roots.jl")
 
 println("# Testing module Random...")
 #     include("Random/parisi_rapuano.jl")
