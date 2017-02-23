@@ -1,8 +1,13 @@
 """
     ground_state_mincut(g::AGraph, h::Vector, J)
 
+<<<<<<< HEAD:src/Ising/mincut.jl
 Exactly compute the ground state of an Ising model with ferromagneting (i.e. nonnegative)
 couplings using a minimum cut algorithm implemented in FatGraphs.jl package.
+=======
+Computes the ground state of a Random Field Ising Model using
+a minimum cut algorithm implemented in Erdos.jl package.
+>>>>>>> 3b8f1a4... FatGraphs -> Erdos:src/RFIM/mincut.jl
 
 Coupling `J` can be in the form of a costant, a matrix, or a
 vector of vectors (adjacency list style).

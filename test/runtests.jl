@@ -3,8 +3,13 @@ using LittleScienceTools
 using LittleScienceTools.Measuring
 using LittleScienceTools.Random
 using LittleScienceTools.Roots
+<<<<<<< HEAD
 using LittleScienceTools.Ising
 using FatGraphs
+=======
+using LittleScienceTools.RFIM
+using Erdos
+>>>>>>> 3b8f1a4... FatGraphs -> Erdos
 
 using Base.Test
 
