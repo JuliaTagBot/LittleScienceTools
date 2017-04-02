@@ -1,4 +1,3 @@
-include("../src/LittleScienceTools.jl")
 using LittleScienceTools
 using LittleScienceTools.Measuring
 using LittleScienceTools.Random

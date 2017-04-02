@@ -1,15 +1,15 @@
 const Ord = Base.Order.ForwardOrdering
-const ObsData = SortedDict{Tuple,OrderedDict{Symbol,Observable}, Ord}
+const ObsData = SortedDict{Tuple,OrderedDict{String,Observable}, Ord}
 
 type ObsTable
     data::ObsData
-    par_names::OrderedSet{Symbol}
+    par_names::OrderedSet{String}
 end
 
-ObsTable() = ObsTable(ObsData(Ord()), OrderedSet{Symbol}())
+ObsTable() = ObsTable(ObsData(Ord()), OrderedSet{String}())
 function ObsTable{Params}(::Type{Params})
     t = ObsTable()
-    set_params_names!(t, fieldnames(Params))
+    set_params_names!(t, string.(fieldnames(Params)))
     t
 end
 ObsTable{T}(params::T) = ObsTable(T)
@@ -17,7 +17,7 @@ ObsTable{T}(params::T) = ObsTable(T)
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
-function set_params_names!(t::ObsTable, keys::Vector{Symbol})
+function set_params_names!(t::ObsTable, keys::Vector{String})
     length(t.par_names) != 0 && Error("Can be done only once!")
     t.par_names = OrderedSet(keys)
 end
@@ -25,7 +25,7 @@ end
 params_names(t::ObsTable) = t.par_names
 
 function obs_names(t::ObsTable)
-    names = OrderedSet{Symbol}()
+    names = OrderedSet{String}()
     for (k,v) in t.data
         push!(names, keys(v)...)
     end
@@ -38,9 +38,9 @@ function nsamples(t::ObsTable, par::Tuple)
 end
 
 # Indexing inteface
-getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{Symbol,Observable}())
+getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
 setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(i))
-getindex(d::OrderedDict{Symbol,Observable}, i::Symbol) = get!(d, i, Observable())
+getindex(d::OrderedDict{String,Observable}, i::String) = get!(d, i, Observable())
 function to_index(i)
     if length(fieldnames(i)) == 0
         return (i,)
@@ -190,7 +190,7 @@ function ObsTable(datfile::String)
     f = open(datfile,"r")
     header = readline(f)
     h = split(h)[2:end]
-    names = map(x->Symbol(split(x,':')[2]),h)
+    names = map(x->split(x,':')[2], h)
 
     nums = map(x->parse(Int,split(x,':')[1]),h)
     count = find(nums .== 1:length(nums)) |> length
