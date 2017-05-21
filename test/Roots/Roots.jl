@@ -16,7 +16,7 @@ ok, x, it, normf = findroot(x->(x^2-1)^2, 0.5)
 @test normf < 1e-10
 @test ok
 
-ok, x, it, normf = findroot(x->(x^2-1)^2, 0.5, NewtonMethod(), atol=1e-14)
+ok, x, it, normf = findroot(x->(x^2-1)^2, 0.5, NewtonMethod(atol=1e-14))
 @test abs(x-1) < 1e-7
 @test normf < 1e-14
 @test ok

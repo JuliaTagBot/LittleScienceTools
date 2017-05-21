@@ -1,4 +1,29 @@
-# author Carlo Baldassi
+# authors: Carlo Baldassi and Carlo Lucibello
+"""
+    type NewtonMethod <: AbstractRootsMethod
+        dx::Float64
+        maxiters::Int
+        verb::Int
+        atol::Float64
+    end
+
+Type containg the parameters for Newton's root finding algorithm.
+The default parameters are:
+
+    NewtonMethod(dx=1e-7, maxiters=1000, verb=0, atol=1e-10)
+
+"""
+type NewtonMethod <: AbstractRootsMethod
+    dx::Float64
+    maxiters::Int
+    verb::Int
+    atol::Float64
+end
+
+NewtonMethod(; dx=1e-7, maxiters=1000, verb =0, atol=1e-10) =
+                                    NewtonMethod(dx, maxiters, verb, atol)
+
+
 
 function ∇!(∂f::Matrix, f::Function, x0, δ, f0, x1)
     n = length(x0)
@@ -35,12 +60,7 @@ ok, x, it, normf = newton(x->exp(x)-x^4, 1.)
 ok || normf < 1e-10 || warn("Newton Failed")
 
 """
-function newton(f::Function, x₀::Float64;
-        dx::Float64 = 1e-7,
-        maxiters::Int = 1_000_000,
-        verb::Int = 0,
-        atol::Float64 = 1e-10)
-
+function newton(f::Function, x₀::Float64, m::NewtonMethod)
     η = 1.0
     ∂f = 0.0
     x = x₀
@@ -50,17 +70,17 @@ function newton(f::Function, x₀::Float64;
     @assert isa(f0, Real)
     normf0 = abs(f0)
     it = 0
-    while normf0 ≥ atol
-        it > maxiters && return (false, x, it, normf0)
+    while normf0 ≥ m.atol
+        it > m.maxiters && return (false, x, it, normf0)
         it += 1
-        if verb > 1
+        if m.verb > 1
             println("(𝔫) it=$it")
             println("(𝔫)   x=$x")
             println("(𝔫)   f(x)=$f0")
             println("(𝔫)   normf=$(abs(f0))")
             println("(𝔫)   η=$η")
         end
-        δ = dx
+        δ = m.dx
         while true
             try
                 ∂f = ∇(f, x, δ, f0)
@@ -72,12 +92,12 @@ function newton(f::Function, x₀::Float64;
                 warn("new δ = $δ")
             end
             if δ < 1e-15
-                normf0 ≥ atol && warn("newton:  δ=$δ")
+                normf0 ≥ m.atol && warn("newton:  δ=$δ")
                 return (false, x, it, normf0)
             end
         end
         Δx = -f0 / ∂f
-        verb > 1 && println("(𝔫)  Δx=$Δx")
+        m.verb > 1 && println("(𝔫)  Δx=$Δx")
         while true
             x1 = x + Δx * η
             local new_f0, new_normf0
@@ -103,11 +123,7 @@ function newton(f::Function, x₀::Float64;
     return true, x, it, normf0
 end
 
-function newton(f::Function, x₀;
-        dx::Float64 = 1e-7,
-        maxiters::Int = 1_000_000,
-        verb::Int = 0,
-        atol::Float64 = 1e-10)
+function newton(f::Function, x₀, m::NewtonMethod)
 
     η = 1.0
     n = length(x₀)
@@ -119,17 +135,17 @@ function newton(f::Function, x₀;
     @assert length(f0) == n
     normf0 = vecnorm(f0)
     it = 0
-    while normf0 ≥ atol
-        it > maxiters && return (false, x, it, normf0)
+    while normf0 ≥ m.atol
+        it > m.maxiters && return (false, x, it, normf0)
         it += 1
-        if verb > 1
+        if m.verb > 1
             println("(𝔫) it=$it")
             println("(𝔫)   x=$x")
             println("(𝔫)   f0=$f0")
             println("(𝔫)   normf=$(vecnorm(f0))")
             println("(𝔫)   η=$η")
         end
-        δ = dx
+        δ = m.dx
         while true
             try
                 ∇!(∂f, f, x, δ, f0, x1)
@@ -138,7 +154,7 @@ function newton(f::Function, x₀;
                 δ /= 2
             end
             if δ < 1e-15
-                normf0 ≥ atol && warn("newton:  δ=$δ")
+                normf0 ≥ m.atol && warn("newton:  δ=$δ")
                 return (false, x, it, normf0)
             end
         end
@@ -147,7 +163,7 @@ function newton(f::Function, x₀;
         else
             Δx = -f0 / ∂f[1,1]
         end
-        verb > 1 && println("(𝔫)  Δx=$Δx")
+        m.verb > 1 && println("(𝔫)  Δx=$Δx")
         while true
             for i = 1:n
                 x1[i] = x[i] + Δx[i] * η
