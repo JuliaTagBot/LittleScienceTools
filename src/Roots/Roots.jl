@@ -26,9 +26,9 @@ functions are supported by `NewtonMethod()`.
 Returns a tuple `(ok, x, it, normf)`.
 
 **Usage Example**
-ok, x, it, normf = findroot(x->exp(x)-x^4, 1.)
-ok || normf < 1e-10 || warn("Newton Failed")
 
+    ok, x, it, normf = findroot(x->exp(x)-x^4, 1.)
+    ok || normf < 1e-10 || warn("Newton Failed")
 """
 findroot(f, x0; kws...) = findroot(f, x0, NewtonMethod(); kws...)
 
