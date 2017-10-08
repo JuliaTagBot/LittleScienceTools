@@ -72,7 +72,7 @@ function header(t::ObsTable; lenpar=9, lenobs=18)
     h = ""
     i = 1
     for k in pnames
-        s = i == 1 ? "# $i:$k": "$i:$k"
+        s = i == 1 ? "# $i:$k" : "$i:$k"
         h *= s * repeat(" ",lenpar-length(s))
         i+=1
     end
