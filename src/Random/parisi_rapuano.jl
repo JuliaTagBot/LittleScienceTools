@@ -21,8 +21,8 @@ function ParisiRapuano(seed::Integer)
 
     for i=ip3:ip-1
         y = myrand * UInt64(16807)
-        @compat myrand = touint32(xor(y, 0x7fffffff) + (y >> 31))
-        @compat if xor(myrand, 0x80000000) != 0
+        myrand = touint32(xor(y, 0x7fffffff) + (y >> 31))
+        if xor(myrand, 0x80000000) != 0
             myrand = (myrand & 0x7fffffff) + one(UInt32)
         end
         ira[i+1] = myrand
@@ -55,7 +55,7 @@ function rand(r::ParisiRapuano, ::Type{Base.Random.CloseOpen})
 	# assert( 1<= r.ip2+1 <= 256)
 	# assert( 1<= r.ip3+1 <= 256)
     uno = UInt8(1)
-    @compat x = xor(r.ira[r.ip1+1] + r.ira[r.ip2+1], r.ira[r.ip3+1])
+    x = xor(r.ira[r.ip1+1] + r.ira[r.ip2+1], r.ira[r.ip3+1])
     r.ira[r.ip+1] = x
     r.ip = (r.ip + uno) % UInt8;
     r.ip1 = (r.ip1 + uno) % UInt8;
