@@ -17,6 +17,8 @@ ObsTable{T}(params::T) = ObsTable(T)
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
+function set_params_names!(t::ObsTable, keys::Vector{Symbol}) = set_params_names!(t, string.(keys))
+
 function set_params_names!(t::ObsTable, keys::Vector{String})
     length(t.par_names) != 0 && Error("Can be done only once!")
     t.par_names = OrderedSet(keys)
