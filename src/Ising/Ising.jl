@@ -1,12 +1,89 @@
 __precompile__()
 module Ising
-using ..Random
 using DataStructures
 using Erdos
+
+# using ..Random
+
+import Base: rand
+immutable DiscreteDistribution
+    p::Vector{Float64}
+    P::Vector{Float64} # p(k<=i)
+end
+
+function DiscreteDistribution(w)
+    @assert all(w .>= 0) "All weights should be non-negative"
+    p = w / sum(w)
+    P = cumsum(p)
+    return DiscreteDistribution(p, P)
+end
+
+rand(d::DiscreteDistribution) = searchsortedfirst(d.P, rand())
+
+"""
+    randint([rng,] probs::Vector{Float64})
+
+Generate a random integer `i` between `1` and `length(probs)`.
+`i` is sampled with probability probs[i].
+The vector `probs` is assumed to sum to one.
+"""
+function randint(rng::AbstractRNG, probs::Vector{Float64})
+    r = rand(rng)
+    c = 0.
+    i = 0
+    for p in probs
+        i += 1
+        c += p
+        r <= c && return i
+    end
+    return 0 #not supposed to arrive here
+end
+
+randint(probs::Vector{Float64}) = randint(GLOBAL_RNG, probs)
+
 
 export  ground_state_mincut, ground_state_ϵgreedy, ground_state_τeo,
         random_couplings
 
+include("ArraySets.jl")
+using .ArraySets
+function create_J_LUCA(;N::Int = 400, K::Int = -1, seed::Int = 0)
+    seed > 0 && srand(seed)
+    J = [zeros(Int, N) for i = 1:N]
+    if K < 0
+        J .= [rand(-1:2:1, N) for i = 1:N]
+        for i = 1:N
+            Ji = J[i]
+            for j = 1:i
+                if j == i
+                    Ji[j] = 0
+                else
+                    Ji[j] = J[j][i]
+                end
+            end
+        end
+    else
+        edges = ArraySet(K*N)
+        for i = 1:K*N
+            push!(edges, i)
+        end
+        while edges.t > 0
+            iedg = rand(edges)
+            delete!(edges, iedg)
+            i = (iedg-1)÷K + 1
+            j = i
+            jedg = 0
+            while j == i
+                jedg = rand(edges)
+                j = (jedg-1)÷K + 1
+            end
+            delete!(edges, jedg)
+            J[i][j] = rand(-1:2:1)
+            J[j][i] = J[i][j]
+        end
+    end
+    return J
+end
 
 getJ{T}(J::T, i, j, k) = J
 getJ{T}(J::Vector{Vector{T}}, i, j, k) = J[i][k]
