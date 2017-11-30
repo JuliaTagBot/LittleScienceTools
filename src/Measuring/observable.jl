@@ -1,4 +1,4 @@
-type Observable
+mutable struct Observable
     v1::Float64
     v2::Float64
     t::Int64
@@ -44,7 +44,7 @@ function (&)(a::Observable,val::Real)
     Observable(v1, v2, t)
 end
 
-function (&){T<:Real}(a::Observable,vals::AbstractArray{T})
+function (&)(a::Observable,vals::AbstractArray{T}) where T<:Real
      b = deepcopy(a)
     for x in vals
         b &= x

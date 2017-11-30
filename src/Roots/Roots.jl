@@ -5,7 +5,7 @@ using Compat
 export findroot, AbstractRootsMethod,
      NewtonMethod, InterpolationMethod
 
-@compat abstract type AbstractRootsMethod end
+abstract type AbstractRootsMethod end
 
 include("newton.jl")
 include("interpolation.jl")

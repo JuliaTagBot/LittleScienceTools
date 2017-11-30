@@ -13,7 +13,7 @@ The default parameters are:
     NewtonMethod(dx=1e-7, maxiters=1000, verb=0, atol=1e-10)
 
 """
-type NewtonMethod <: AbstractRootsMethod
+mutable struct NewtonMethod <: AbstractRootsMethod
     dx::Float64
     maxiters::Int
     verb::Int
