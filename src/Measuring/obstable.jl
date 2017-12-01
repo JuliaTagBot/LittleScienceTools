@@ -17,6 +17,7 @@ ObsTable{T}(params::T) = ObsTable(T)
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
+set_params_names!(t::ObsTable, keys...) = set_params_names!(t, collect(keys))
 set_params_names!(t::ObsTable, keys::Vector{Symbol}) = set_params_names!(t, string.(keys))
 
 function set_params_names!(t::ObsTable, keys::Vector{String})
@@ -42,15 +43,18 @@ end
 # Indexing inteface
 getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
 setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(i))
+
+
 getindex(d::OrderedDict{String,Observable}, i::String) = get!(d, i, Observable())
 function to_index(i)
     if length(fieldnames(i)) == 0
         return (i,)
     else
-        return (splat(i)...)
+        return (splat(i)...,)
     end
 end
-to_index(i::Tuple) = i
+to_index(i::Tuple{String}) = i
+to_index(i::Tuple{Symbol}) = string.(i)
 
 endof(t::ObsTable) = endof(t.data)
 
