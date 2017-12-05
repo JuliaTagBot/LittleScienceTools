@@ -9,7 +9,7 @@ vector has double the length of the original ones.
 interwine([1,1,1], [2,2,2]) == [1,2,1,2,1,2]
 ```
 """
-function interwine{T}(v1::Vector{T}, v2::Vector{T})
+function interwine(v1::Vector{T}, v2::Vector{T}) where T
     @assert size(v1) == size(v2)
     v = Vector{T}(2length(v1))
     v[1:2:end] = v1
@@ -22,7 +22,7 @@ end
 
 Interwine the columns of two matrices.
 """
-function interwine{T}(m1::Matrix{T}, m2::Matrix{T})
+function interwine(m1::Matrix{T}, m2::Matrix{T}) where T
     @assert size(m1) == size(m2)
     v = Vector{Vector{T}}(2size(m1,2))
     for j=1:size(m1,2)

@@ -20,7 +20,7 @@ The default parameters are:
     InterpolationMathod(dx=-1, maxiters=20, parallel= false, verb=0, atol=1e-10, n=6)
 
 """
-type InterpolationMethod <: AbstractRootsMethod
+mutable struct InterpolationMethod <: AbstractRootsMethod
     dx::Float64
     maxiters::Int
     parallel::Bool

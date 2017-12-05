@@ -1,4 +1,4 @@
-type Measure
+mutable struct Measure
     mean::Float64
     error::Float64
 end

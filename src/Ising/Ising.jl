@@ -8,15 +8,15 @@ export  ground_state_mincut, ground_state_ϵgreedy, ground_state_τeo,
         random_couplings
 
 
-getJ{T}(J::T, i, j, k) = J
-getJ{T}(J::Vector{Vector{T}}, i, j, k) = J[i][k]
-getJ{T}(J::AbstractMatrix{T}, i, j, k) = J[i,j]
+getJ(J::T, i, j, k) where {T} = J
+getJ(J::Vector{Vector{T}}, i, j, k) where {T} = J[i][k]
+getJ(J::AbstractMatrix{T}, i, j, k) where {T} = J[i,j]
 
-Jtype{T}(J::T) = T
-Jtype{T}(J::Vector{Vector{T}}) = T
-Jtype{T}(J::AbstractMatrix{T}) = T
+Jtype(J::T) where {T} = T
+Jtype(J::Vector{Vector{T}}) where {T} = T
+Jtype(J::AbstractMatrix{T}) where {T} = T
 
-function energy{TH}(g::AGraph, σ::Vector, h::Vector{TH}, Js)
+function energy(g::AGraph, σ::Vector, h::Vector{TH}, Js) where TH
     E = zero(promote_type(Jtype(Js), TH))
     for i=1:nv(g)
         E -= h[i]*σ[i]

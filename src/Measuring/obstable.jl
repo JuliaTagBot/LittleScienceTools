@@ -7,7 +7,7 @@ mutable struct ObsTable
 end
 
 ObsTable() = ObsTable(ObsData(Ord()), OrderedSet{String}())
-function ObsTable{Params}(::Type{Params})
+function ObsTable(::Type{Params}) where Params
     t = ObsTable()
     set_params_names!(t, string.(fieldnames(Params)))
     t

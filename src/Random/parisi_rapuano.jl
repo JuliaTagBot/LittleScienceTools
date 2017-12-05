@@ -1,5 +1,5 @@
 # Ref [Parisi-Rapuano '85](http://www.sciencedirect.com/science/article/pii/0370269385906707)
-type ParisiRapuano <: AbstractRNG
+mutable struct ParisiRapuano <: AbstractRNG
     myrand::UInt32
     ira::Vector{UInt32}
     ip::UInt8
@@ -42,7 +42,7 @@ end
 
 srand(r::ParisiRapuano, seed) = deepcopy!(r, ParisiRapuano(seed))
 
-function deepcopy!{T}(dest::T, source::T)
+function deepcopy!(dest::T, source::T) where T
     for name in fieldnames(T)
         setfield!(dest, name, deepcopy(getfield(source, name)))
     end

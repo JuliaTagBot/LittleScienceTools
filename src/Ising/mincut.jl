@@ -25,7 +25,7 @@ function ground_state_mincut(g::AGraph, h::Vector, J)
     return σ, E
 end
 
-function net_capacity{T}(g::AGraph, h::Vector{T}, J)
+function net_capacity(g::AGraph, h::Vector{T}, J) where T
     N = nv(g)
     dg = digraph(g)
     add_vertices!(dg, 2)

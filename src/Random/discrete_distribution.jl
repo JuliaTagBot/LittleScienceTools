@@ -1,4 +1,4 @@
-immutable DiscreteDistribution
+struct DiscreteDistribution
     p::Vector{Float64}
     P::Vector{Float64} # p(k<=i)
 end

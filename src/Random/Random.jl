@@ -36,8 +36,8 @@ Pay attention, it has complecity `O(length(a))`, since it creates a copy of `a`
 internally.
 Use [`randchoice!`](@ref) if you want a `O(k)` sampler.
 """
-randchoice{T}(rng::AbstractRNG, a::AbstractArray{T}, k::Integer; exclude = T[]) = randchoice!(rng, collect(a), k; exclude = exclude)
-randchoice{T}(a::AbstractArray{T}, k::Integer; exclude = T[]) = randchoice(GLOBAL_RNG, a, k; exclude = exclude)
+randchoice(rng::AbstractRNG, a::AbstractArray{T}, k::Integer; exclude = T[]) where {T} = randchoice!(rng, collect(a), k; exclude = exclude)
+randchoice(a::AbstractArray{T}, k::Integer; exclude = T[]) where {T} = randchoice(GLOBAL_RNG, a, k; exclude = exclude)
 
 """
 randchoice!([rng,] a, k; exclude=nothing)
@@ -46,7 +46,7 @@ Sample `k` elements from array `a` without repetition and eventually excluding e
 Pay attention, it changes the order of the elements in `a`.
 Use [`randchoice`](@ref) for the non-mutating version.
 """
-function randchoice!{T}(rng::AbstractRNG, a::AbstractArray{T}, k::Integer; exclude::Vector{T} = T[])
+function randchoice!(rng::AbstractRNG, a::AbstractArray{T}, k::Integer; exclude::Vector{T} = T[]) where T
     length(a) < k + length(exclude) && error("Array too short.")
     res = Vector{eltype(a)}()
     sizehint!(res, k)
@@ -63,7 +63,7 @@ function randchoice!{T}(rng::AbstractRNG, a::AbstractArray{T}, k::Integer; exclu
     return res
 end
 
-randchoice!{T}(a::AbstractArray{T}, k::Integer; exclude = T[]) = randchoice!(GLOBAL_RNG, a, k; exclude = exclude)
+randchoice!(a::AbstractArray{T}, k::Integer; exclude = T[]) where {T} = randchoice!(GLOBAL_RNG, a, k; exclude = exclude)
 
 """
     randchoice([rng,] itr)
@@ -106,17 +106,4 @@ otherwise.
 """
 getRNG(seed::Integer) = seed > 0 ? MersenneTwister(seed) : GLOBAL_RNG
 
-if VERSION < v"0.6-"
-    function rand(r::AbstractRNG, t::Dict)
-        isempty(t) && throw(ArgumentError("dict must be non-empty"))
-        n = length(t.slots)
-        while true
-            i = rand(r, 1:n)
-            Base.isslotfilled(t, i) && return (t.keys[i] => t.vals[i])
-        end
-    end
-    rand(t::Dict) = rand(GLOBAL_RNG, t)
-    rand(r::AbstractRNG, s::Set) = rand(r, s.dict).first
-    rand(s::Set) = rand(GLOBAL_RNG, s)
-end
 end #submodule
