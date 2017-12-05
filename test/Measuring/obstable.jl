@@ -1,4 +1,4 @@
-type Params
+mutable struct Params
     a; b
 end
 
@@ -24,6 +24,11 @@ for (x,y) in range
     @test isapprox(mean(ob), x+y, atol=5error(ob))
 end
 println(t)
+open("test.dat","w") do f 
+    print(f, t)
+end
+t2 = ObsTable("test.dat")
+println(t2)
 
 t1 = ObsTable(Params)
 t2 = ObsTable(Params)
