@@ -1,7 +1,7 @@
 const Ord = Base.Order.ForwardOrdering
 const ObsData = SortedDict{Tuple,OrderedDict{String,Observable}, Ord}
 
-type ObsTable
+mutable struct ObsTable
     data::ObsData
     par_names::OrderedSet{String}
 end
@@ -12,7 +12,7 @@ function ObsTable{Params}(::Type{Params})
     set_params_names!(t, string.(fieldnames(Params)))
     t
 end
-ObsTable{T}(params::T) = ObsTable(T)
+ObsTable(params::T) where {T} = ObsTable(T)
 
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
@@ -79,15 +79,15 @@ function header(t::ObsTable; lenpar=9, lenobs=18)
     i = 1
     for k in pnames
         s = i == 1 ? "# $i:$k" : "$i:$k"
-        h *= s * repeat(" ",lenpar-length(s))
+        h *= s * repeat(" ", max(2, lenpar-length(s)))
         i+=1
     end
     s = "$i:num"
-    h *= s * repeat(" ",lenpar-length(s))
+    h *= s * repeat(" ", max(2, lenpar-length(s)))
     i+= 1
     for k in onames
         s = "$i:$k"
-        h *=  s * repeat(" ",lenobs-length(s))
+        h *=  s * repeat(" ", max(2, lenpar-length(s)))
         i+=2
     end
     return strip(h)
@@ -101,13 +101,13 @@ function Base.show(io::IO, t::ObsTable)
     for (par, obs) in t
         for p in par
             s = "$p"
-            print(io, s * repeat(" ", lenpar-length(s)))
+            print(io, s * repeat(" ", max(2, lenpar-length(s))))
         end
         s = "$(nsamples(t, par))"
-        print(io, s * repeat(" ", lenpar-length(s)))
+        print(io, s * repeat(" ", max(3, lenpar-length(s))))
         for name in obs_names(t)
             s = haskey(obs, name) ? "$(obs[name])" : "NaN NaN"
-            print(io, s * repeat(" ", lenobs-length(s)))
+            print(io, s * repeat(" ", max(2, lenobs-length(s))))
         end
         println(io)
     end

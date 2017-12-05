@@ -1,4 +1,4 @@
-type Params
+mutable struct Params
     a; b
 end
 
