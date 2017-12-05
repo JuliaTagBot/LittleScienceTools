@@ -19,10 +19,11 @@ splat(a) = [getfield(a,f) for f in fieldnames(a)]
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
 set_params_names!(t::ObsTable, keys...) = set_params_names!(t, collect(keys))
 set_params_names!(t::ObsTable, keys::Vector{Symbol}) = set_params_names!(t, string.(keys))
+set_params_names!(t::ObsTable, keys::Vector) = error("non valid keys")
 
-function set_params_names!(t::ObsTable, keys::Vector{String})
+function set_params_names!(t::ObsTable, keys::Vector{<:AbstractString})
     length(t.par_names) != 0 && Error("Can be done only once!")
-    t.par_names = OrderedSet(keys)
+    t.par_names = OrderedSet(String.(keys))
 end
 
 params_names(t::ObsTable) = t.par_names
@@ -104,10 +105,12 @@ function Base.show(io::IO, t::ObsTable)
             print(io, s * repeat(" ", max(2, lenpar-length(s))))
         end
         s = "$(nsamples(t, par))"
-        print(io, s * repeat(" ", max(3, lenpar-length(s))))
-        for name in obs_names(t)
+        print(io, s)
+        for (k,name) in enumerate(obs_names(t))
+            lenspace = k==1 ? max(2,lenpar-length(s)) : max(2,lenobs-length(s))
+            print(io, repeat(" ", lenspace))
             s = haskey(obs, name) ? "$(obs[name])" : "NaN NaN"
-            print(io, s * repeat(" ", max(2, lenobs-length(s))))
+            print(io, s)
         end
         println(io)
     end
@@ -189,33 +192,36 @@ end
 
 """
     ObsTable(datfile::String)
-Read an observable for a properly formatted dat file (i.e. the result of a
-    `print(datfile,t::ObsTable)`).
+
+Read an observable from a properly formatted data file 
+(i.e. the result of a `print(datfile,t::ObsTable)`).
 """
 function ObsTable(datfile::String)
     f = open(datfile,"r")
     header = readline(f)
-    h = split(h)[2:end]
-    names = map(x->split(x,':')[2], h)
+    header = split(header)
+    @assert header[1] == "#"
 
-    nums = map(x->parse(Int,split(x,':')[1]),h)
-    count = find(nums .== 1:length(nums)) |> length
-    nparams = count-1
+    colnums = parse.(Int, map(x->split(x,':')[1], header[2:end]))
+    names = map(x->split(x,':')[2], header[2:end])
 
-    dat = readdlm(f)
+    count = findlast(colnums .== 1:length(colnums))
+    nparams = count - 2
+    @assert names[nparams+1] ∈ ["num", "samples", "nsamples", "nsamp"]
+    res = readdlm(f)
     close(f)
 
     t = ObsTable()
-    on = names[count:end]
-    set_params_names!(t, names[1:nparams])
+    set_params_names!(t, names[1:nparams]...)
+    onames = String.(names[count:end])
     for i=1:size(res,1)
         pars = (res[i,1:nparams]...)
-        nsamp = res[i,count]
-        for j=count+1:2:size(res,2)
+        nsamp = res[i,nparams+1]
+        for j=count:2:size(res,2)
             m, e = res[i,j], res[i,j+1]
-            jid = (j+1-count)÷2
+            name = onames[(j-count)÷2 + 1]
             if isfinite(m)
-                t[pars][names[jid]] = obs_from_mean_err_samp(m, e, nsamp)
+                t[pars][name] = obs_from_mean_err_samp(m, e, nsamp)
             end
         end
     end
