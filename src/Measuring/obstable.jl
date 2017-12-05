@@ -218,7 +218,7 @@ function ObsTable(datfile::String)
     for i=1:size(res,1)
         pars = (res[i,1:nparams]...)
         nsamp = res[i,nparams+1]
-        for j=count:2:size(res,2)
+        for j=count:2:size(res,2)-1
             m, e = res[i,j], res[i,j+1]
             name = onames[(j-count)÷2 + 1]
             if isfinite(m)
