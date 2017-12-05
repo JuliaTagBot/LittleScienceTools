@@ -117,20 +117,24 @@ function Base.show(io::IO, t::ObsTable)
 end
 
 """
-    merge(t1::ObsTable, t2::ObsTable)
+    merge(t::ObsTables, ts::ObsTable...)
+    merge!(t::ObsTables, ts::ObsTable...)
 
-Fuse togheter the observations of `t1` and `t2`.
+Fuse togheter the observations of many `ObsTable`s 
+as if the where independent measurements.
 """
-function merge(t1::ObsTable, t2::ObsTable)
+function merge(t1::ObsTable, ts::ObsTable...)
     t = deepcopy(t1)
-    return merge!(t, t2)
+    return merge!(t, ts...)
 end
 
-function merge!(t::ObsTable, t2::ObsTable)
-    t.par_names = union(t.par_names, t2.par_names)
-    for (k,v) in t2
-        for (n, o) in v
-            t[k][n] &= o
+function merge!(t::ObsTable, ts::ObsTable...)
+    for t2 in ts
+        t.par_names = union(t.par_names, t2.par_names)
+        for (k,v) in t2
+            for (n, o) in v
+                t[k][n] &= o
+            end
         end
     end
     return t
