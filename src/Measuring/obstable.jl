@@ -198,6 +198,8 @@ Read an observable from a properly formatted data file
 """
 function ObsTable(datfile::String)
     f = open(datfile,"r")
+    t = ObsTable()
+    eof(f) && return t
     header = readline(f)
     header = split(header)
     @assert header[1] == "#"
@@ -208,11 +210,10 @@ function ObsTable(datfile::String)
     count = findlast(colnums .== 1:length(colnums))
     nparams = count - 2
     @assert names[nparams+1] ∈ ["num", "samples", "nsamples", "nsamp"]
+    set_params_names!(t, names[1:nparams]...)
+    eof(f) && return t    
     res = readdlm(f)
     close(f)
-
-    t = ObsTable()
-    set_params_names!(t, names[1:nparams]...)
     onames = String.(names[count:end])
     for i=1:size(res,1)
         pars = (res[i,1:nparams]...)
