@@ -21,15 +21,15 @@ New observations can be taken using operator `&`.
 Kahan summation algorithm is used.
 ```julia
 ob = Observable()
-vec = randn(nsamples)
-for x in vec
+v = randn(nsamples)
+for x in v
     ob &= x
 end
 # or equivalently
 #ob &= vec
 
-error(ob) # error on the mean ≈ std(vec) / √(nsamples-1)   
-mean(ob) # ≈ mean(vec)
+error(ob) # error on the mean ≈ std(v) / √(nsamples-1)   
+mean(ob) # ≈ mean(v)
 @assert isapprox(mean(ob), 0, atol=5*error(ob))
 
 
@@ -59,10 +59,10 @@ struct Params
     a; b
 end
 
-obs = ObsTable(Params)
+ot = ObsTable(Params)
 # or as an equivalent alternative
-obs = ObsTable()
-set_params_names!(obs, [:a, :b])
+ot = ObsTable()
+set_params_names!(ot, [:a, :b])
 
 for (x,y) in zip(1.:10., 1.:10.)
     par = Params(x,y)
@@ -70,17 +70,17 @@ for (x,y) in zip(1.:10., 1.:10.)
         r1, r2 = [x,y] + randn(2)
 
         # Indexing can be done with a Tuple
-        obs[(x,y)][:sum2] &= r1^2 + r2^2
+        ot[(x,y)][:sum2] &= r1^2 + r2^2
 
         # or with a type (which will be "splattered" to a tuple).
-        obs[par][:sum] &= r1 + r2
+        ot[par][:sum] &= r1 + r2
 
         # If there are no Observable corresponding to
         # a given symbol (i.e. :sum), a new one will be created.
     end
 end
 open("res.dat","w") do f
-    print(f, obs)
+    print(f, ot)
 end
 ```
 
@@ -98,12 +98,16 @@ The output of last line looks like this:
 9.0      9.0      1000     17.958 4.37e-02      163.22 7.82e-01      
 10.0     10.0     1000     20.037 4.57e-02      202.82 9.16e-01      
 ```
-To store an ObsTable use JLD:
+To store an ObsTable use JLD2:
 ```julia
-using JLD
+using JLD2
 
-save("obs.jld", "obs", obs)
-newobs = load("obs.jl", "obs")
+@save "obs.jld2" ot
+@load "obs.jld2" ot 
+```
+Multiple `ObsTable`s can me merged togheter in a single table:
+```julia
+ot = merge(ot1, ot2, ot3)
 ```
 
 ## module Ising
