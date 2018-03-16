@@ -26,7 +26,9 @@ for (x,y) in range
         r1, r2 = [x,y] + randn(2)
         t[par]["sum"] &= r1 + r2
         t[par]["sum2"] &= r1^2 + r2^2
+        t[par][:sum3] &= r1 + r2
     end
+    @test t[par][:sum] == t[par][:sum3]
 end
 
 for (x,y) in range

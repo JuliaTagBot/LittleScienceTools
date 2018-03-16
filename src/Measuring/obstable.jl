@@ -69,9 +69,10 @@ function to_index(i)
     end
 end
 
-
+# SOME type piracy here
 getindex(d::OrderedDict{String,Observable}, i::String) = get!(d, i, Observable())
 getindex(d::OrderedDict{String,Observable}, i::Symbol) = get!(d, string(i), Observable())
+setindex!(d::OrderedDict{String,Observable}, x, i::Symbol) = setindex!(d, x, string(i))
 
 endof(t::ObsTable) = endof(t.data)
 
