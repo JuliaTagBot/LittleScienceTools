@@ -2,11 +2,23 @@ mutable struct Params
     a; b
 end
 
+@testset "obstable" begin
+import DataStructures
+
 t = ObsTable(Params)
  # or as an equivalent alternative
 t2 = ObsTable()
 set_params_names!(t2, ["a", "b"])
 @test params_names(t2) == params_names(t)
+@test t2 == ObsTable(["a","b"]) == ObsTable((:a,"b"))
+
+t2 = ObsTable()
+set_params_names!(t2, :a, :b)
+@test t2.par_names == DataStructures.OrderedSet(["a","b"])
+
+t2[1,2] #create entry
+@test t2[1,2] === t2[(1,2)] === t2[[1,2]]
+
 range = zip(1.:10., 1.:10.)
 for (x,y) in range
     par = Params(x,y)
@@ -47,7 +59,7 @@ t = merge(t1,t2)
 
 p2 = Params(2,3)
 t2[p2]["ene"] &= 3
-t = merge(t1,t2)
+t = merge(t1,t2)									
 @test length(t.par_names) == 2
 @test length(t.data) == 2
 @test length(t[p]) == 2
@@ -55,4 +67,9 @@ t = merge(t1,t2)
 @test mean(t[p]["ene"]) == 2
 @test mean(t[p2]["ene"]) == 3
 
+@test mean(t[(p.a, p.b)][:ene]) == 2
+@test mean(t[(p2.a, p2.b)][:ene]) == 3
+
 println(t)
+
+end #testset

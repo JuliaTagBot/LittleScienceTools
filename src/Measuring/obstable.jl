@@ -13,8 +13,16 @@ function ObsTable(::Type{Params}) where Params
     t
 end
 ObsTable(params::T) where {T} = ObsTable(T)
+ObsTable(pnames::Vector) = ObsTable(string.(pnames))
+ObsTable(pnames::Tuple) = ObsTable(collect(pnames))
 
-splat(a) = [getfield(a,f) for f in fieldnames(a)]
+function ObsTable(pnames::Vector{String})
+    t = ObsTable()
+    set_params_names!(t, pnames)
+    t
+end
+
+==(t1::ObsTable, t2::ObsTable) = t1.data==t2.data && t1.par_names==t2.par_names
 
 #set_params_names!(t::ObsTable, a) = set_params_names!(fieldnames(a))
 set_params_names!(t::ObsTable, keys...) = set_params_names!(t, collect(keys))
@@ -42,20 +50,28 @@ function nsamples(t::ObsTable, par::Tuple)
 end
 
 # Indexing inteface
+getindex(t::ObsTable, i...) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
+setindex!(t::ObsTable, v, i...) = setindex!(t.data, v, to_index(i))
+
 getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
 setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(i))
 
+splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
-getindex(d::OrderedDict{String,Observable}, i::String) = get!(d, i, Observable())
+
+to_index(i::Tuple) = i
+to_index(i::Vector) = to_index((i...,))
 function to_index(i)
-    if length(fieldnames(i)) == 0
+    if length(fieldnames(i)) == 0 #it is not a composite type
         return (i,)
     else
         return (splat(i)...,)
     end
 end
-to_index(i::Tuple{String}) = i
-to_index(i::Tuple{Symbol}) = string.(i)
+
+
+getindex(d::OrderedDict{String,Observable}, i::String) = get!(d, i, Observable())
+getindex(d::OrderedDict{String,Observable}, i::Symbol) = get!(d, string(i), Observable())
 
 endof(t::ObsTable) = endof(t.data)
 

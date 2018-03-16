@@ -26,7 +26,7 @@ for x in v
     ob &= x
 end
 # or equivalently
-#ob &= vec
+#ob &= v
 
 error(ob) # error on the mean ≈ std(v) / √(nsamples-1)   
 mean(ob) # ≈ mean(v)
@@ -59,28 +59,30 @@ struct Params
     a; b
 end
 
-ot = ObsTable(Params)
-# or as an equivalent alternative
-ot = ObsTable()
-set_params_names!(ot, [:a, :b])
+t = ObsTable(Params)
+# or 
+t = ObsTable()
+set_params_names!(t, [:a, :b])
+# or 
+t = ObsTable(["a", "b"])
 
 for (x,y) in zip(1.:10., 1.:10.)
     par = Params(x,y)
     for i=1:1000
         r1, r2 = [x,y] + randn(2)
 
-        # Indexing can be done with a Tuple
-        ot[(x,y)][:sum2] &= r1^2 + r2^2
-
-        # or with a type (which will be "splattered" to a tuple).
-        ot[par][:sum] &= r1 + r2
+        # ObsTable can be indexed in different ways
+        t[x,y][:sum2] &= r1^2 + r2^2
+        t[(x,y)][:sum2] &= r1^2 + r2^2
+        t[[x,y]][:sum2] &= r1^2 + r2^2
+        t[par][:sum] &= r1 + r2
 
         # If there are no Observable corresponding to
         # a given symbol (i.e. :sum), a new one will be created.
     end
 end
 open("res.dat","w") do f
-    print(f, ot)
+    print(f, t)
 end
 ```
 
@@ -102,12 +104,12 @@ To store an ObsTable use JLD2:
 ```julia
 using JLD2
 
-@save "obs.jld2" ot
-@load "obs.jld2" ot 
+@save "obs.jld2" t
+@load "obs.jld2" t 
 ```
 Multiple `ObsTable`s can me merged togheter in a single table:
 ```julia
-ot = merge(ot1, ot2, ot3)
+t = merge(t1, t2, t3)
 ```
 
 ## module Ising
