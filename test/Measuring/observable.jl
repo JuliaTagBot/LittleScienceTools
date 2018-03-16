@@ -1,13 +1,14 @@
+@testset "observable" begin
 
 nsamples=10^6
 ob = Observable()
-vec = randn(nsamples)
-for x in vec
+v = randn(nsamples)
+for x in v
     ob &= x
 end
 
-@test isapprox(error(ob),  std(vec) / √(nsamples-1), atol=1e-9)
-@test isapprox(mean(ob), sum_kbn(vec) / nsamples, atol=1e-14)
+@test isapprox(error(ob),  std(v) / √(nsamples-1), atol=1e-9)
+@test isapprox(mean(ob), sum_kbn(v) / nsamples, atol=1e-14)
 @test isapprox(mean(ob), 0, atol=5*error(ob))
 
 ob = Observable()
@@ -24,3 +25,5 @@ ob2 &= NaN
 @test ob2 == ob
 ob2 &= Inf
 @test ob2 == ob
+
+end #testset

@@ -7,21 +7,25 @@ using Compat
 using Erdos
 using Base.Test
 
-println("# Testing module Measuring...")
-include("Measuring/observable.jl")
-include("Measuring/obstable.jl")
+@testset "Measuring" begin
+    include("Measuring/observable.jl")
+    include("Measuring/obstable.jl")
+end
 
-println("# Testing module Ising...")
-include("Ising/runtests.jl")
+@testset "Ising" begin
+    include("Ising/runtests.jl")
+end
 
-println("# Testing module Roots...")
-include("Roots/Roots.jl")
+@testset "Roots" begin
+    include("Roots/Roots.jl")
+end
 
-println("# Testing module Random...")
+@testset "Random" begin
 #     include("Random/parisi_rapuano.jl")
     include("Random/discrete_distribution.jl")
     include("Random/Random.jl")
+end
 
-include("utils.jl")
-
-println("# All tests passed!")
+@testset "utils" begin
+    include("utils.jl")
+end
