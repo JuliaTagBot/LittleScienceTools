@@ -1,15 +1,16 @@
 const Ord = Base.Order.ForwardOrdering
-const ObsData = SortedDict{Tuple,OrderedDict{String,Observable}, Ord}
+const ObsData = SortedDict{Tuple, OrderedDict{String,Observable}, Ord}
 
 mutable struct ObsTable
     data::ObsData
     par_names::OrderedSet{String}
 end
 
+## TODO deprecate, no table should be initialized
 ObsTable() = ObsTable(ObsData(Ord()), OrderedSet{String}())
+
 function ObsTable(::Type{Params}) where Params
-    t = ObsTable()
-    set_params_names!(t, string.(fieldnames(Params)))
+    t = ObsTable(string.(fieldnames(Params)))
     t
 end
 ObsTable(params::T) where {T} = ObsTable(T)
@@ -50,22 +51,26 @@ function nsamples(t::ObsTable, par::Tuple)
 end
 
 # Indexing inteface
-getindex(t::ObsTable, i...) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
-setindex!(t::ObsTable, v, i...) = setindex!(t.data, v, to_index(i))
+getindex(t::ObsTable, i...) = get!(t.data, to_index(t, i), OrderedDict{String,Observable}())
+setindex!(t::ObsTable, v, i...) = setindex!(t.data, v, to_index(t, i))
 
-getindex(t::ObsTable, i) = get!(t.data, to_index(i), OrderedDict{String,Observable}())
-setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(i))
+getindex(t::ObsTable, i) = get!(t.data, to_index(t, i), OrderedDict{String,Observable}())
+setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(t, i))
 
 splat(a) = [getfield(a,f) for f in fieldnames(a)]
 
 
-to_index(i::Tuple) = i
-to_index(i::Vector) = to_index((i...,))
-function to_index(i)
+function to_index(t, i::Tuple)  
+    @assert length(params_names(t)) == length(i) "wrong number of params in indexing"
+    i
+end
+
+to_index(t, i::Vector) = to_index(t, (i...,))
+function to_index(t, i)
     if length(fieldnames(i)) == 0 #it is not a composite type
-        return (i,)
+        return to_index(t, (i,))
     else
-        return (splat(i)...,)
+        return to_index(t, (splat(i)...,))
     end
 end
 

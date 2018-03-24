@@ -31,6 +31,10 @@ for (x,y) in range
     @test t[par][:sum] == t[par][:sum3]
 end
 
+@test_throws AssertionError t2[:a]
+@test_throws AssertionError t2[:b][:E] &= 1
+
+
 for (x,y) in range
     par = Params(x,y)
     @test t[par] === t[(x,y)]
