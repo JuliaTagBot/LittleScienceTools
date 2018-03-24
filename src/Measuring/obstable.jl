@@ -101,19 +101,17 @@ function header(t::ObsTable; lenpar=9, lenobs=18)
     h = ""
     i = 1
     for k in pnames
-        s = i == 1 ? "# $i:$k" : "$i:$k"
-        h *= s * repeat(" ", max(2, lenpar-length(s)))
+        s = i == 1 ? "# $i:$k " : "$i:$k "
+        h *= rpad(s, lenpar)
         i+=1
     end
-    s = "$i:num"
-    h *= s * repeat(" ", max(2, lenpar-length(s)))
+    h *= rpad("$i:num ", lenpar)
     i+= 1
     for k in onames
-        s = "$i:$k"
-        h *=  s * repeat(" ", max(2, lenpar-length(s)))
-        i+=2
+        h *=  rpad("$i:$k ", lenobs)
+        i +=2
     end
-    return strip(h)
+    return h
 end
 
 function Base.show(io::IO, t::ObsTable)
@@ -123,16 +121,13 @@ function Base.show(io::IO, t::ObsTable)
 
     for (par, obs) in t
         for p in par
-            s = "$p"
-            print(io, s * repeat(" ", max(2, lenpar-length(s))))
+            print(io, rpad("$p ", lenpar))
         end
-        s = "$(nsamples(t, par))"
-        print(io, s)
-        for (k,name) in enumerate(obs_names(t))
-            lenspace = k==1 ? max(2,lenpar-length(s)) : max(2,lenobs-length(s))
-            print(io, repeat(" ", lenspace))
-            s = haskey(obs, name) ? "$(obs[name])" : "NaN NaN"
-            print(io, s)
+
+        print(io, rpad("$(nsamples(t, par)) ", lenpar))
+        for name in obs_names(t)
+            s = haskey(obs, name) ? "$(obs[name]) " : "NaN NaN "
+            print(io, rpad(s, lenobs))
         end
         println(io)
     end
