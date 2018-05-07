@@ -38,10 +38,9 @@ function (&)(a::Observable,val::Real)
     cv2 = (z - a.v2) - y
     v2 = z
 
-    vlast = val
     t = a.t + 1
 
-    Observable(v1, v2, t)
+    Observable(v1, v2, t, cv1, cv2)
 end
 
 function (&)(a::Observable,vals::AbstractArray{T}) where T<:Real
