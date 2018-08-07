@@ -118,14 +118,14 @@ function Base.show(io::IO, t::ObsTable)
     lenpar = 9
     lenobs = 21
     println(io, header(t, lenpar=lenpar, lenobs=lenobs))
-
+    onames = obs_names(t)
     for (par, obs) in t
         for p in par
             print(io, rpad("$p ", lenpar))
         end
 
         print(io, rpad("$(nsamples(t, par)) ", lenpar))
-        for name in obs_names(t)
+        for name in onames    
             s = haskey(obs, name) ? "$(obs[name]) " : "NaN NaN "
             print(io, rpad(s, lenobs))
         end
