@@ -5,20 +5,20 @@ os:
   - linux
   
 julia:
-  - 0.6
+  - 0.7
   - nightly
 
 notifications:
   email: false
 # uncomment the following lines to override the default test script
 
-before_install:
-  - sudo apt-get install -y gnuplot
+# before_install:
+  # - sudo apt-get install -y gnuplot
 
 script:
  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
  - julia -e 'Pkg.clone(pwd()); Pkg.build("LittleScienceTools")'
- - julia -e 'Pkg.add("Erdos")'
+#  - julia -e 'Pkg.add("Erdos")'
  - julia -e 'Pkg.test("LittleScienceTools"; coverage=true)'
 
 # after_success:

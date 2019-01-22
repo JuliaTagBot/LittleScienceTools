@@ -28,9 +28,9 @@ end
 # or equivalently
 #ob &= v
 
-error(ob) # error on the mean ≈ std(v) / √(nsamples-1)   
+err(ob) # error on the mean ≈ std(v) / √(nsamples-1)   
 mean(ob) # ≈ mean(v)
-@assert isapprox(mean(ob), 0, atol=5*error(ob))
+@assert isapprox(mean(ob), 0, atol=5*err(ob))
 
 
 ob = Observable()
@@ -38,15 +38,15 @@ for i=1:10^6
     ob &= norm(2rand(2)-1) < 1 ? 1 : 0
 end
 ob *= 4
-@assert isapprox(mean(ob), π, atol=5*error(ob))
+@assert isapprox(mean(ob), π, atol=5*err(ob))
 
-println(ob) # print mean and error
+println(ob) # print mean and err
 # 3.140972 0.001642615473
 ```
 The `error` for a random variate with standard deviation `σ` is approximately given by
 
 ```julia
-error(obs) ~ σ / √(nsamples-1)
+err(obs) ~ σ / √(nsamples-1)
 ```
 
 ### ObsTable

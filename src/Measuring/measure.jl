@@ -23,10 +23,10 @@ function (&)(a::Measure, b::Measure)
         return
     end
 
-    w1 = 1./ a.error^2
-    w2 = 1./ b.error^2
+    w1 = 1 / a.error^2
+    w2 = 1 / b.error^2
     m = (a.mean * w1 + b.mean * w2 ) / (w1+w2)
-    e = 1. / sqrt(w1+w2)
+    e = 1 / sqrt(w1+w2)
     return Measure(m, e)
 end
 

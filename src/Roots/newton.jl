@@ -57,7 +57,7 @@ Returns a tuple `(ok, x, it, normf)`.
 
 **Usage Example**
 ok, x, it, normf = newton(x->exp(x)-x^4, 1.)
-ok || normf < 1e-10 || warn("Newton Failed")
+ok || normf < 1e-10 || @warn("Newton Failed")
 
 """
 function newton(f::Function, x₀::Float64, m::NewtonMethod)
@@ -86,13 +86,13 @@ function newton(f::Function, x₀::Float64, m::NewtonMethod)
                 ∂f = ∇(f, x, δ, f0)
                 break
             catch err
-                warn("newton: catched error:")
+                @warn("newton: catched error:")
                 Base.display_error(err, catch_backtrace())
                 δ /= 2
-                warn("new δ = $δ")
+                @warn("new δ = $δ")
             end
             if δ < 1e-15
-                normf0 ≥ m.atol && warn("newton:  δ=$δ")
+                normf0 ≥ m.atol && @warn("newton:  δ=$δ")
                 return (false, x, it, normf0)
             end
         end
@@ -105,7 +105,7 @@ function newton(f::Function, x₀::Float64, m::NewtonMethod)
                 new_f0 = f(x1)
                 new_normf0 = abs(new_f0)
             catch err
-                warn("newton: catched error:")
+                @warn("newton: catched error:")
                 Base.display_error(err, catch_backtrace())
                 new_normf0 = Inf
             end
@@ -154,7 +154,7 @@ function newton(f::Function, x₀, m::NewtonMethod)
                 δ /= 2
             end
             if δ < 1e-15
-                normf0 ≥ m.atol && warn("newton:  δ=$δ")
+                normf0 ≥ m.atol && @warn("newton:  δ=$δ")
                 return (false, x, it, normf0)
             end
         end

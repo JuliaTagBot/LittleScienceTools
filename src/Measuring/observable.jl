@@ -25,7 +25,7 @@ end
 # Kahan summation algorithm
 function (&)(a::Observable,val::Real)
     if !isfinite(val)
-        warn("$val observation not considered")
+        @warn("$val observation not considered")
         return copy(a)
     end
     y = val - a.cv1
@@ -52,23 +52,23 @@ function (&)(a::Observable,vals::AbstractArray{T}) where T<:Real
 end
 
 
-mean(a::Observable) = a.t > 0 ? a.v1/a.t : 0
-var(a::Observable) = a.v2 / a.t - mean(a)^2
-error(a::Observable) = a.t <= 1 ? 0 :
+Statistics.mean(a::Observable) = a.t > 0 ? a.v1/a.t : 0
+Statistics.var(a::Observable) = a.v2 / a.t - mean(a)^2
+err(a::Observable) = a.t <= 1 ? 0 :
                        var(a) < 0 ? 0. : sqrt(var(a) /(a.t -1)) # sometimes numerical errors for small var
 
 function shortshow(io::IO, a::Observable)
     max_round = 10
-    if error(a) > 0.
-        r = round(Int, log(10, error(a))) - 2
+    if err(a) > 0.
+        r = round(Int, log(10, err(a))) - 2
         r = abs(min(0,r))
         r = min(r, max_round)
         # const fmt = "%.$(r)f %.2e"
         # @eval @printf($io, $fmt, $(mean(a)), $(error(a)))#mean(a), " ", error(a))
-        print(io, "$(round(mean(a),r)) ")
-        @printf(io, "%.2e", error(a))
+        print(io, "$(round(mean(a), digits=r)) ")
+        @printf(io, "%.2e", err(a))
     else
-        print(io, "$(round(mean(a), max_round)) $(error(a))")
+        print(io, "$(round(mean(a), digits=max_round)) $(err(a))")
     end
 end
 
@@ -79,7 +79,7 @@ Base.show(io::IO, a::Observable) = shortshow(io, a)
 
 +(a::Observable, val::Real) = Observable(a.v1 + val*a.t, a.v2 + val*a.v1 + val^2*a.t, a.t)
 +(val::Real, a::Observable) = +(a, val)
-==(a::Observable, b::Observable) = all(getfield(a,f) == getfield(b,f) for f in fieldnames(a))
+==(a::Observable, b::Observable) = all(getfield(a,f) == getfield(b,f) for f in fieldnames(typeof(a)))
 copy(a::Observable) = deepcopy(a)
 
 """
@@ -100,7 +100,7 @@ end
 
 function +(a::Observable, b::Observable)
     t = t_composition(a, b)
-    ea, eb = error(a), error(b)
+    ea, eb = err(a), err(b)
     ma, mb = mean(a), mean(b)
     e = sqrt(ea^2 + eb^2)
     v1 = (ma + mb) * t
@@ -111,7 +111,7 @@ end
 function *(a::Observable, b::Observable)
     t = t_composition(a, b)
     ma, mb = mean(a), mean(b)
-    ea, eb = error(a), error(b)
+    ea, eb = err(a), err(b)
     e = sqrt(mb^2*ea^2 + ma^2*eb^2)
     v1 = ma*mb*t
     v2 = e^2*t + v1^2/t

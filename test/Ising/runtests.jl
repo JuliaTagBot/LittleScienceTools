@@ -1,6 +1,6 @@
 using LittleScienceTools.Random
 using LittleScienceTools.Ising
-using Erdos
+# using Erdos
 using Base.Test
 
 g = Graph(10,20)

@@ -57,7 +57,7 @@ setindex!(t::ObsTable, v, i...) = setindex!(t.data, v, to_index(t, i))
 getindex(t::ObsTable, i) = get!(t.data, to_index(t, i), OrderedDict{String,Observable}())
 setindex!(t::ObsTable, v, i) = setindex!(t.data, v, to_index(t, i))
 
-splat(a) = [getfield(a,f) for f in fieldnames(a)]
+splat(a) = [getfield(a,f) for f in fieldnames(typeof(a))]
 
 
 function to_index(t, i::Tuple)  
@@ -67,7 +67,7 @@ end
 
 to_index(t, i::Vector) = to_index(t, (i...,))
 function to_index(t, i)
-    if length(fieldnames(i)) == 0 #it is not a composite type
+    if length(fieldnames(typeof(i))) == 0 #it is not a composite type
         return to_index(t, (i,))
     else
         return to_index(t, (splat(i)...,))
@@ -84,9 +84,7 @@ endof(t::ObsTable) = endof(t.data)
 haskey(t::ObsTable, k) = haskey(t.data, k)
 
 # Iterable inteface
-start(t::ObsTable) = start(t.data)
-next(t::ObsTable, state)  = next(t.data, state)
-done(t::ObsTable, state) = done(t.data, state)
+Base.iterate(t::ObsTable, x...) = iterate(t.data, x...)
 eltype(::Type{ObsTable}) = eltype(typeof(t.data))
 length(t::ObsTable) = length(t.data)
 
@@ -158,9 +156,9 @@ function merge!(t::ObsTable, ts::ObsTable...)
 end
 
 """
-    tomatrices(t::ObsTable) -> (params, means, errors)
+    tomatrices(t::ObsTable) -> (params, means, errs)
 
-Converts `t` into three matrices, `params`,`means` and `errors`.
+Converts `t` into three matrices, `params`,`means` and `errs`.
 """
 function tomatrices(t::ObsTable)
     n = length(t)
@@ -176,7 +174,7 @@ function tomatrices(t::ObsTable)
         for (j, oname) in enumerate(onames)
             obs = olist[oname]
             y[i,j] = mean(obs)
-            yerr[i,j] = error(obs)
+            yerr[i,j] = err(obs)
         end
         i += 1
     end
@@ -204,7 +202,7 @@ function tomatrix(t::ObsTable)
             obs = olist[oname]
             j = 2j+m1
             y[i,j] = mean(obs)
-            y[i,j+1] = error(obs)
+            y[i,j+1] = err(obs)
         end
         i += 1
     end
@@ -237,7 +235,7 @@ function ObsTable(datfile::String)
     close(f)
     onames = String.(names[count:end])
     for i=1:size(res,1)
-        pars = (res[i,1:nparams]...)
+        pars = (res[i,1:nparams]...,)
         nsamp = res[i,nparams+1]
         for j=count:2:size(res,2)-1
             m, e = res[i,j], res[i,j+1]

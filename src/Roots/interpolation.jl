@@ -71,7 +71,7 @@ function findzero_interp(f::Function, x0::Float64, m::InterpolationMethod)
             m.verb > 3 && println("# SUCCESS x* = $(s), normf = $normf0")
             ok =true
         else
-            m.verb > 1 && warn("failed: iter=$iter x* = $(s), normf = $normf0")
+            m.verb > 1 && @warn("failed: iter=$iter x* = $(s), normf = $normf0")
             ok =false
         end
 

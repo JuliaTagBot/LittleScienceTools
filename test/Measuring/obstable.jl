@@ -39,7 +39,7 @@ for (x,y) in range
     par = Params(x,y)
     @test t[par] === t[(x,y)]
     ob = t[par]["sum"]
-    @test isapprox(mean(ob), x+y, atol=5error(ob))
+    @test isapprox(mean(ob), x+y, atol=5err(ob))
 end
 println(t)
 open("test.dat","w") do f 
